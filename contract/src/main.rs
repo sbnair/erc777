@@ -58,21 +58,63 @@ pub extern "C" fn symbol() {
     ret(val)
 }
 
+#[no_mangle]
+pub extern "C" fn total_supply() {
+    let val: U256 = get_key("total_supply");
+    ret(val)
+}
+
+#[no_mangle]
+pub extern "C" fn balance_of() {
+    let account: AccountHash = runtime::get_named_arg("account");
+    let val: U256 = get_key(&balance_key(&account));
+    ret(val)
+}
+
+#[no_mangle]
+pub extern "C" fn granularity() {
+    let val: U256 = get_key("granularity");
+    ret(val)
+}
+
+
+
 // All session code must have a `call` entrypoint.
 #[no_mangle]
 pub extern "C" fn call() {
    
     let token_name: String = runtime::get_named_arg("token_name");
     let token_symbol: String = runtime::get_named_arg("token_symbol");
+    let token_total_supply: U256 = runtime::get_named_arg("token_total_supply");
+    let token_granularity: U256 = runtime::get_named_arg("token_granularity");
      // Get the optional first argument supplied to the argument.
     let value: String = runtime::get_named_arg(ARG_MESSAGE);
     store(value);
     let mut entry_points = EntryPoints::new(); 
     entry_points.add_entry_point(endpoint("name", vec![], CLType::String));
     entry_points.add_entry_point(endpoint("symbol", vec![], CLType::String));
+    entry_points.add_entry_point(endpoint("total_supply", vec![], CLType::U256));
+    entry_points.add_entry_point(endpoint("granularity", vec![], CLType::U256));
+    entry_points.add_entry_point(endpoint(
+        "balance_of",
+        vec![Parameter::new("account", AccountHash::cl_type())],
+        CLType::U256,
+    ));
     let mut named_keys = NamedKeys::new();
     named_keys.insert("name".to_string(), storage::new_uref(token_name).into());
     named_keys.insert("symbol".to_string(), storage::new_uref(token_symbol).into());
+    named_keys.insert(
+        "total_supply".to_string(),
+        storage::new_uref(token_total_supply).into(),
+    );
+    named_keys.insert(
+        "granularity".to_string(),
+        storage::new_uref(token_granularity).into(),
+    );
+    named_keys.insert(
+        balance_key(&runtime::get_caller()),
+        storage::new_uref(token_total_supply).into(),
+    );
     let (contract_hash, _) =
         storage::new_locked_contract(entry_points, Some(named_keys), None, None);
     runtime::put_key("ERC777", contract_hash.into());
@@ -104,6 +146,10 @@ fn set_key<T: ToBytes + CLTyped>(name: &str, value: T) {
             runtime::put_key(name, key);
         }
     }
+}
+
+fn balance_key(account: &AccountHash) -> String {
+    format!("balances_{}", account)
 }
 
 fn endpoint(name: &str, param: Vec<Parameter>, ret: CLType) -> EntryPoint {
