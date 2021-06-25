@@ -1,0 +1,1 @@
+/home/ubuntu/erc777/erc777/tests/target/release/integration-tests: /home/ubuntu/erc777/erc777/tests/build.rs /home/ubuntu/erc777/erc777/tests/src/integration_tests.rs ../contract/Cargo.toml ../contract/src/main.rs
