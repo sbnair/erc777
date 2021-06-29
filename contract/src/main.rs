@@ -172,11 +172,11 @@ pub extern "C" fn mint() {
 
     let amount: U256 = runtime::get_named_arg("amount");
    
-    let operator_data: Vec<u8> = runtime::get_named_arg("operator_data");    
+//    let operator_data: Vec<u8> = runtime::get_named_arg("operator_data");    
             
-    set_key(&balance_key(total_supply),get_key::<U256>("total_supply").saturating_sub(amount));   
+    set_key(&"total_supply",get_key::<U256>("total_supply").saturating_sub(amount));   
         
-    set_key(&balance_key(&token_holder),get_key(&balance_key(&token_holder)).saturating_sub(amount));
+    set_key(&balance_key(&token_holder),get_key::<U256>(&balance_key(&token_holder)).saturating_sub(amount));
           
  //   self.Minted(runtime::get_caller(), token_holder, amount, operator_data);
        
@@ -279,16 +279,16 @@ fn erc20_compatibility_key() -> String {
    format!("erc20_compatibility_{}","erc20")
 }
 
-fn _authorize_operator(operator: AccountHash, holder: AccountHash) {
+fn _authorize_operator(_operator: AccountHash, _holder: AccountHash) {
   
 }
 
-fn _revoke_operator(operator: AccountHash, holder: AccountHash) {
+fn _revoke_operator(_operator: AccountHash, _holder: AccountHash) {
   
 }
 
 
-fn do_send(operator: &AccountHash, from: &AccountHash, to: &AccountHash, amount: &U256, data: &Vec<u8>, operator_data: &Vec<u8>) {
+fn do_send(_operator: &AccountHash, from: &AccountHash, to: &AccountHash, amount: &U256, _data: &Vec<u8>, _operator_data: &Vec<u8>) {
            // self.require_multiple(amount);
            // self.require_sufficient_funds(from, amount);
            // require(to != &H160::zero(), "Cannot send to 0x0");
@@ -346,7 +346,7 @@ fn do_send(operator: &AccountHash, from: &AccountHash, to: &AccountHash, amount:
             }
         }
 
-        fn do_burn(operator: &AccountHash, token_holder: &AccountHash, amount: &U256, data: &Vec<u8>, operator_data: &Vec<u8>) {
+        fn do_burn(_operator: &AccountHash, token_holder: &AccountHash, amount: &U256, _data: &Vec<u8>, _operator_data: &Vec<u8>) {
           //  self.require_multiple(amount);
           //  self.require_sufficient_funds(token_holder, amount);
 
