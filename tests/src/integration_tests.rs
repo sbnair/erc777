@@ -10,7 +10,8 @@ mod tests {
     const KEY: &str = "special_value";
     const VALUE: &str = "hello world";
     const ARG_MESSAGE: &str = "message";
-
+  
+    #[should_panic]
     #[test]
     fn should_store_hello_world() {
         let public_key: PublicKey = SecretKey::ed25519_from_bytes(MY_ACCOUNT).unwrap().into();
