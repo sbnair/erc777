@@ -86,14 +86,12 @@ pub extern "C" fn default_operators() {
 #[no_mangle]
 pub extern "C" fn authorize_operator() {
     let operator: AccountHash = runtime::get_named_arg("operator");
-    // let operator_key = balance_key(&operator);
-    // let holder_key = balance_key(&runtime::get_caller());
+    
 
-    // let operator_value: U256 = (get_key::<U256>(&operator_key));
+    
     set_key(&allowance_key(&operator, &runtime::get_caller()),U256::one());
 
-    // let holder_value: U256 = (get_key::<U256>(&holder_key));
-    // set_key(&holder_key, holder_value);
+    
     _authorize_operator(operator, runtime::get_caller());    
 }
 
@@ -172,13 +170,13 @@ pub extern "C" fn mint() {
 
     let amount: U256 = runtime::get_named_arg("amount");
    
-//    let operator_data: Vec<u8> = runtime::get_named_arg("operator_data");    
+ 
             
     set_key(&"total_supply",get_key::<U256>("total_supply").saturating_sub(amount));   
         
     set_key(&balance_key(&token_holder),get_key::<U256>(&balance_key(&token_holder)).saturating_sub(amount));
           
- //   self.Minted(runtime::get_caller(), token_holder, amount, operator_data);
+ 
        
     if erc20_compatible() {
               //  self.Transfer(AccountHash::zero(), token_holder, amount);
@@ -289,78 +287,29 @@ fn _revoke_operator(_operator: AccountHash, _holder: AccountHash) {
 
 
 fn do_send(_operator: &AccountHash, from: &AccountHash, to: &AccountHash, amount: &U256, _data: &Vec<u8>, _operator_data: &Vec<u8>) {
-           // self.require_multiple(amount);
-           // self.require_sufficient_funds(from, amount);
-           // require(to != &H160::zero(), "Cannot send to 0x0");
-            
-           // let mut registry = ERC820RegistryClient::new(AccountHash::from([0x82, 0x0b, 0x58, 0x6C, 0x8C, 0x28, 0x12, 0x53, 0x66, 0xC9, 0x98, 0x64, 0x1B, 0x09, 0xDC, 0xbE, 0x7d, 0x4c, 0xBF, 0x06]));
-
-           // let sender_hook = registry.getInterfaceImplementer(*from, ERC777TokensSender_key().into());
-
-            // Call ERC777 sender hook if present
-           //  if sender_hook != AccountHash::zero() {
-              //  let mut sender = ERC777TokensSenderClient::new(sender_hook);
-              //  sender.tokensToSend(
-                //    *operator,
-                  //  *from,
-                //    *to,
-                  //  *amount,
-                 //   data.clone(),
-                  //  operator_data.clone());
-           // }
+          
            let from_value: AccountHash = *from;
 
            let amount_value: U256 = *amount;
             
             set_key(&balance_key(&from_value),get_key::<U256>(&balance_key(&from_value)).saturating_sub(amount_value)); 
-          //  pwasm_ethereum::write(&balance_key(from),
-            //                      &read_balance_of(from)
-              // .saturating_sub(*amount).into());
+         
             set_key(&balance_key(to), get_key::<U256>(&balance_key(&to)).saturating_sub(amount_value));
-          //  pwasm_ethereum::write(&balance_key(to),
-                               //   &read_balance_of(to)
-                                //      .saturating_add(*amount).into());
+         
 
-          //  let recipient_hook = registry.getInterfaceImplementer(*to, ERC777TokensRecipient_key().into());
-
-            // Call ERC777 recipient hook if present
-          //  if recipient_hook != AccountHash::zero() {
-            //    let mut recipient = ERC777TokensRecipientClient::new(recipient_hook);
-              //  recipient.tokensReceived(
-                //    *operator,
-                //    *from,
-                //    *to,
-               //     *amount,
-                //    data.clone(),
-                //    operator_data.clone());
-           // }
-
-          //  self.Sent(*operator,
-            //          *from,
-              //        *to,
-                //      *amount,
-                //      data.clone(),
-                  //   operator_data.clone());
+          
             if erc20_compatible() {
               //  self.Transfer(*from, *to, *amount);
             }
         }
 
         fn do_burn(_operator: &AccountHash, token_holder: &AccountHash, amount: &U256, _data: &Vec<u8>, _operator_data: &Vec<u8>) {
-          //  self.require_multiple(amount);
-          //  self.require_sufficient_funds(token_holder, amount);
-
-
+        
             set_key(&balance_key(token_holder),get_key::<U256>(&balance_key(&token_holder)).saturating_sub(*amount)); 
 
-          //  pwasm_ethereum::write(&balance_key(token_holder),
-                               //   &read_balance_of(&token_holder)
-                                    //  .saturating_sub(*amount).into());
-
+         
             set_key(&"total_supply",get_key::<U256>("total_supply").saturating_sub(*amount));
-         //   pwasm_ethereum::write(&total_supply_key(),
-                               //   &self.totalSupply()
-                                //      .saturating_sub(*amount).into());
+        
 
           //  self.Burned(*operator,
             //            *token_holder,
