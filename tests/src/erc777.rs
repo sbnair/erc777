@@ -12,6 +12,12 @@ pub mod token_cfg {
     pub fn total_supply() -> U256 {
         1_000.into()
     }
+    pub fn total_granularity() -> U256 {
+        1_000.into()
+    }
+    pub fn token_default_operators() -> Vec<AccountHash> {
+        AccountHash::new([42; 32])
+    }
 }
 
 pub struct Sender(pub AccountHash);
@@ -39,7 +45,9 @@ impl Token {
             "token_name" => token_cfg::NAME,
             "token_symbol" => token_cfg::SYMBOL,
             "token_decimals" => token_cfg::DECIMALS,
-            "token_total_supply" => token_cfg::total_supply()
+            "token_total_supply" => token_cfg::total_supply(),
+            "token_granularity" =>  token_cfg::total_granularity(),
+            "token_default_operators" => token_cfg::token_default_operators()
         };
         let session = SessionBuilder::new(session_code, session_args)
             .with_address(alic.to_account_hash())
