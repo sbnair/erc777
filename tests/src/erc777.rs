@@ -16,8 +16,10 @@ pub mod token_cfg {
         1_000.into()
     }
     pub fn token_default_operators() -> Vec<AccountHash> {
-        Vec(AccountHash::new([42; 32])).into()
-    }
+      //  Vec(AccountHash::new([42; 32])).into()
+        let val: Vec<AccountHash> = Vec::new();
+        return val; 
+     }
 }
 
 pub struct Sender(pub AccountHash);
