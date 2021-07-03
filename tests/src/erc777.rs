@@ -30,9 +30,11 @@ impl Token {
         let joe = PublicKey::ed25519_from_bytes([9u8; 32]).unwrap();
         let alic = ali.clone();
         let bobc = bob.clone(); 
+      //   const MY_ACCOUNT: [u8; 32] = [7u8; 32];
         let mut context = TestContextBuilder::new()
             .with_public_key(ali, U512::from(500_000_000_000_000_000u64))
             .with_public_key(bob, U512::from(500_000_000_000_000_000u64))
+           //  .with_account(MY_ACCOUNT, U512::from(128_000_000))
             .build();
         let session_code = Code::from("contract.wasm");
         let session_args = runtime_args! {
