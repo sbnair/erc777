@@ -16,7 +16,7 @@ pub mod token_cfg {
         1_000.into()
     }
     pub fn token_default_operators() -> Vec<AccountHash> {
-        AccountHash::new([42; 32])
+        Vec(AccountHash::new([42; 32])).into()
     }
 }
 
