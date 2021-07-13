@@ -31,6 +31,10 @@ use types::{
     runtime_args, CLType, CLTyped, CLValue, Group, Parameter, RuntimeArgs, URef, U256, Key
 };
 
+mod utils;
+
+use utils::helper_methods::*;
+
 
 const KEY: &str = "special_value";
 const ARG_MESSAGE: &str = "message";
@@ -89,18 +93,23 @@ pub extern "C" fn authorize_operator() {
     
 
     
-    set_key(&allowance_key(&operator, &runtime::get_caller()),U256::one());
+   //  set_key(&allowance_key(&operator, &runtime::get_caller()),U256::one());
 
-    
+    _set_allowance_key(operator, runtime::get_caller());
+
     _authorize_operator(operator, runtime::get_caller());    
 }
 
 #[no_mangle]
 pub extern "C" fn revoke_operator() {
     let operator: AccountHash = runtime::get_named_arg("operator");
-   // require(operator != runtime::get_caller(), "Cannot revoke yourself as an operator"); 
-   set_key(&allowance_key(&operator, &runtime::get_caller()),U256::zero());
-   _revoke_operator(operator, runtime::get_caller());
+    if (operator == runtime::get_caller()) {
+     // require(operator != runtime::get_caller(), "Cannot revoke yourself as an operator"); 
+    //  set_key(&allowance_key(&operator, &runtime::get_caller()),U256::zero());
+     _set_allowance_key(operator, runtime::get_caller());
+
+     _revoke_operator(operator, runtime::get_caller());
+    }
 }
 
 #[no_mangle]
@@ -118,7 +127,7 @@ pub extern "C" fn send() {
     let amount: U256 = runtime::get_named_arg("amount");
     let data: Vec<u8> = runtime::get_named_arg("data");
     // _is_operator_for(operator, token_holder);
-    do_send(&runtime::get_caller(), &runtime::get_caller(), &to, &amount, &data, &Vec::new());
+    _send(&runtime::get_caller(), &runtime::get_caller(), &to, &amount, &data, &Vec::new());
    
 }
 
@@ -127,7 +136,7 @@ pub extern "C" fn send() {
 pub extern "C" fn burn() {
     let amount: U256 = runtime::get_named_arg("amount");
     let data: Vec<u8> = runtime::get_named_arg("data");
-    do_burn(&runtime::get_caller(), &runtime::get_caller(), &amount, &data, &Vec::new());
+    _burn(&runtime::get_caller(), &runtime::get_caller(), &amount, &data, &Vec::new());
 }
 
 #[no_mangle]
@@ -149,7 +158,7 @@ pub extern "C" fn operator_send() {
     let data: Vec<u8> = runtime::get_named_arg("data");
     let operator_data: Vec<u8> = runtime::get_named_arg("operator_data");
     // _is_operator_for(operator, token_holder);
-    do_send(&runtime::get_caller(), &from, &to, &amount, &data, &operator_data);
+    _send(&runtime::get_caller(), &from, &to, &amount, &data, &operator_data);
 }
 
 #[no_mangle]
@@ -160,7 +169,7 @@ pub extern "C" fn operator_burn() {
     let data: Vec<u8> = runtime::get_named_arg("data");
     let operator_data: Vec<u8> = runtime::get_named_arg("operator_data");
     
-    do_burn(&runtime::get_caller(), &from, &amount, &data, &operator_data);
+    _burn(&runtime::get_caller(), &from, &amount, &data, &operator_data);
 }
 
 #[no_mangle]
@@ -169,14 +178,13 @@ pub extern "C" fn mint() {
     let token_holder: AccountHash = runtime::get_named_arg("token_holder");
 
     let amount: U256 = runtime::get_named_arg("amount");
+
+    let data: Vec<u8> = runtime::get_named_arg("data");
+    
+    let operator_data: Vec<u8> = runtime::get_named_arg("operator_data");
    
- 
-            
-    set_key(&"total_supply",get_key::<U256>("total_supply").saturating_sub(amount));   
-        
-    set_key(&balance_key(&token_holder),get_key::<U256>(&balance_key(&token_holder)).saturating_sub(amount));
           
- 
+    _mint(&token_holder, &amount, &data, &operator_data, true);
        
     if erc20_compatible() {
               //  self.Transfer(AccountHash::zero(), token_holder, amount);
@@ -270,11 +278,11 @@ fn set_key<T: ToBytes + CLTyped>(name: &str, value: T) {
 }
 
 fn balance_key(account: &AccountHash) -> String {
-    format!("balances_{}", account)
+    format!("_balance_{}", account)
 }
 
 fn erc20_compatibility_key() -> String {
-   format!("erc20_compatibility_{}","erc20")
+   format!("_erc20_compatibility_{}","erc20")
 }
 
 fn _authorize_operator(_operator: AccountHash, _holder: AccountHash) {
@@ -286,41 +294,7 @@ fn _revoke_operator(_operator: AccountHash, _holder: AccountHash) {
 }
 
 
-fn do_send(_operator: &AccountHash, from: &AccountHash, to: &AccountHash, amount: &U256, _data: &Vec<u8>, _operator_data: &Vec<u8>) {
-          
-           let from_value: AccountHash = *from;
 
-           let amount_value: U256 = *amount;
-            
-            set_key(&balance_key(&from_value),get_key::<U256>(&balance_key(&from_value)).saturating_sub(amount_value)); 
-         
-            set_key(&balance_key(to), get_key::<U256>(&balance_key(&to)).saturating_sub(amount_value));
-         
-
-          
-            if erc20_compatible() {
-              //  self.Transfer(*from, *to, *amount);
-            }
-        }
-
-        fn do_burn(_operator: &AccountHash, token_holder: &AccountHash, amount: &U256, _data: &Vec<u8>, _operator_data: &Vec<u8>) {
-        
-            set_key(&balance_key(token_holder),get_key::<U256>(&balance_key(&token_holder)).saturating_sub(*amount)); 
-
-         
-            set_key(&"total_supply",get_key::<U256>("total_supply").saturating_sub(*amount));
-        
-
-          //  self.Burned(*operator,
-            //            *token_holder,
-              //          *amount,
-                //        data.clone(),
-                  //      operator_data.clone());
-
-            if erc20_compatible() {
-              //  self.Transfer(*token_holder, AccountHash::zero(), *amount);
-            }
-        }
 
 fn _is_operator_for(operator: AccountHash, token_holder: AccountHash) -> bool {
      if operator == token_holder {
