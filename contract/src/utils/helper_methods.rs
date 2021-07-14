@@ -1,16 +1,26 @@
+
 use alloc::{
+
     string::String,
+
 };
 
 use contract::{
+
     contract_api::{runtime},
+
     unwrap_or_revert::UnwrapOrRevert,
+
 };
 
 use types::{
+
     account::AccountHash,
+
     bytesrepr::{Bytes, ToBytes},
+
     CLTyped, U256, CLValue
+
 };
 
 use super::mappings::*;
@@ -40,15 +50,21 @@ pub fn _authorize_operator(operator: AccountHash, holder: AccountHash) {
         return "ERC777: authorizing self as operator"; 
 }
 
+pub fn _allowance(holder: AccountHash, spender: AccountHash) {
+   
+    let val: U256 = get_key::<U256>(&allowance_key(&operator, &token_holder));
+    ret(val)   
+}
+
 pub fn _revoke_operator(operator: AccountHash, holder: AccountHash) {
      
     if (operator != holder)
         return "ERC777: revoking self as operator";  
 }
 
-pub fn _set_allowance_key(operator: &AccountHash, sender: &AccountHash) {
+pub fn _set_allowance_key(operator: &AccountHash, sender: &AccountHash, value: &U256) {
 
-	 set_key(&allowance_key(&operator, &sender),U256::one());
+	 set_key(&allowance_key(&operator, &sender),value);
 
 }
 
@@ -137,6 +153,8 @@ pub fn _approve(holder: &AccountHash, spender: &AccountHash, value: &U256) {
         if  _exists(spender) {
 
     	      return "ERC777: approve from the zero address";
-        }      
+        }
+
+        _set_allowance_key(holder, spender, value);      
 
 }

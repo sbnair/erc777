@@ -118,21 +118,84 @@ pub extern "C" fn revoke_operator() {
     
 }
 
+
 #[no_mangle]
-pub extern "C" fn is_operator_for() {
-    let operator: AccountHash = runtime::get_named_arg("operator");
-    let token_holder: AccountHash = runtime::get_named_arg("token_holder"); 
-    _is_operator_for(operator, token_holder);
-   // require(operator != runtime::get_caller(), "Cannot revoke yourself as an operator"); 
-  // _revoke_operator(operator, runtime::get_caller());
+pub extern "C" fn transfer() {
+    let recipient: AccountHash = runtime::get_named_arg("recipient");
+
+    let from: AccountHash = runtime::get_caller();
+
+    let amount: U256 = runtime::get_named_arg("amount");
+
+    if  _exists(recipient) {
+
+              ret("ERC777: transfer to the zero address");
+    }    
+  
+    ret(true);
+    
+}
+
+
+#[no_mangle]
+pub extern "C" fn transfer_from() {
+
+    let holder: AccountHash = runtime::get_named_arg("holder");
+
+    let recipient: AccountHash = runtime::get_named_arg("recipient");
+
+    let sender: AccountHash = runtime::get_caller();
+
+    let amount: U256 = runtime::get_named_arg("amount");
+
+    if  _exists(recipient) {
+
+              ret("ERC777: transfer to the zero address");
+    }
+
+    if  _exists(holder) {
+
+              ret("ERC777: transfer from the zero address");
+    }    
+  
+    ret(true);
+    
 }
 
 #[no_mangle]
+pub extern "C" fn is_operator_for() {
+
+    let operator: AccountHash = runtime::get_named_arg("operator");
+    
+    let token_holder: AccountHash = runtime::get_named_arg("token_holder"); 
+    
+    _is_operator_for(operator, token_holder);
+  
+}
+
+#[no_mangle]
+pub extern "C" fn approve() {
+   
+    let holder: AccountHash = runtime::get_caller();
+    
+    let spender: AccountHash = runtime::get_named_arg("spender");
+    
+    let value: U256 = runtime::get_named_arg("value");
+    
+    _approve(&holder, &spender, &value);
+   
+}
+
+
+#[no_mangle]
 pub extern "C" fn send() {
+   
     let to: AccountHash = runtime::get_named_arg("to");
+   
     let amount: U256 = runtime::get_named_arg("amount");
+   
     let data: Vec<u8> = runtime::get_named_arg("data");
-    // _is_operator_for(operator, token_holder);
+   
     _send(&runtime::get_caller(), &runtime::get_caller(), &to, &amount, &data, &Vec::new());
    
 }
@@ -140,8 +203,11 @@ pub extern "C" fn send() {
 
 #[no_mangle]
 pub extern "C" fn burn() {
+    
     let amount: U256 = runtime::get_named_arg("amount");
+    
     let data: Vec<u8> = runtime::get_named_arg("data");
+    
     _burn(&runtime::get_caller(), &runtime::get_caller(), &amount, &data, &Vec::new());
 }
 
@@ -158,24 +224,48 @@ pub extern "C" fn enableERC20() {
 
 #[no_mangle]
 pub extern "C" fn operator_send() {
-    let from: AccountHash = runtime::get_named_arg("from");
-    let to: AccountHash = runtime::get_named_arg("to");
+    
+    let sender: AccountHash = runtime::get_named_arg("sender");
+    
+    let recipient: AccountHash = runtime::get_named_arg("recipient");
+    
     let amount: U256 = runtime::get_named_arg("amount");
+    
     let data: Vec<u8> = runtime::get_named_arg("data");
+    
     let operator_data: Vec<u8> = runtime::get_named_arg("operator_data");
-    // _is_operator_for(operator, token_holder);
+
+     if _is_operator_for(&runtime::get_caller(), &account) 
+        ret("ERC777: caller is not an operator for holder");
+    
     _send(&runtime::get_caller(), &from, &to, &amount, &data, &operator_data);
 }
 
 #[no_mangle]
 pub extern "C" fn operator_burn() {
-    let from: AccountHash = runtime::get_named_arg("from");
+    
+    let account: AccountHash = runtime::get_named_arg("account");
    
     let amount: U256 = runtime::get_named_arg("amount");
+    
     let data: Vec<u8> = runtime::get_named_arg("data");
+    
     let operator_data: Vec<u8> = runtime::get_named_arg("operator_data");
+
+    if _is_operator_for(&runtime::get_caller(), &account) 
+       ret("ERC777: caller is not an operator for holder"); 
     
     _burn(&runtime::get_caller(), &from, &amount, &data, &operator_data);
+}
+
+
+#[no_mangle]
+pub extern "C" fn allowance() {
+    let holder: AccountHash = runtime::get_caller();
+   
+    let spender: AccountHash = runtime::get_named_arg("spender");
+    
+    _allowance(&holder, &spender);
 }
 
 #[no_mangle]
