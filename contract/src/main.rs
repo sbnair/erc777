@@ -15,25 +15,40 @@
 extern crate alloc;
 
 use alloc::{
+
     collections::{BTreeMap, BTreeSet},
+
     string::String,
+
 };
+
 use core::convert::TryInto;
 
 use contract::{
+
     contract_api::{runtime, storage},
+
     unwrap_or_revert::UnwrapOrRevert,
+
 };
+
 use types::{
+
     account::AccountHash,
+
     bytesrepr::{FromBytes, ToBytes},
+
     contracts::{EntryPoint, EntryPointAccess, EntryPointType, EntryPoints, NamedKeys},
+
     runtime_args, CLType, CLTyped, CLValue, Group, Parameter, RuntimeArgs, URef, U256, Key
+
 };
 
 mod utils;
 
 use utils::helper_methods::*;
+
+use utils::mappings::*;
 
 
 const KEY: &str = "special_value";
@@ -91,25 +106,16 @@ pub extern "C" fn default_operators() {
 pub extern "C" fn authorize_operator() {
     let operator: AccountHash = runtime::get_named_arg("operator");
     
-
-    
    //  set_key(&allowance_key(&operator, &runtime::get_caller()),U256::one());
-
-    _set_allowance_key(operator, runtime::get_caller());
-
     _authorize_operator(operator, runtime::get_caller());    
 }
 
 #[no_mangle]
 pub extern "C" fn revoke_operator() {
     let operator: AccountHash = runtime::get_named_arg("operator");
-    if (operator == runtime::get_caller()) {
-     // require(operator != runtime::get_caller(), "Cannot revoke yourself as an operator"); 
-    //  set_key(&allowance_key(&operator, &runtime::get_caller()),U256::zero());
-     _set_allowance_key(operator, runtime::get_caller());
-
-     _revoke_operator(operator, runtime::get_caller());
-    }
+  
+    _revoke_operator(operator, runtime::get_caller());
+    
 }
 
 #[no_mangle]
@@ -184,7 +190,7 @@ pub extern "C" fn mint() {
     let operator_data: Vec<u8> = runtime::get_named_arg("operator_data");
    
           
-    _mint(&token_holder, &amount, &data, &operator_data, true);
+    _mint(&token_holder, &amount, &data, &operator_data);
        
     if erc20_compatible() {
               //  self.Transfer(AccountHash::zero(), token_holder, amount);
@@ -250,64 +256,12 @@ pub extern "C" fn call() {
   
 }
 
-fn ret<T: CLTyped + ToBytes>(value: T) {
-    runtime::ret(CLValue::from_t(value).unwrap_or_revert())
-}
-
-fn get_key<T: FromBytes + CLTyped + Default>(name: &str) -> T {
-    match runtime::get_key(name) {
-        None => Default::default(),
-        Some(value) => {
-            let key = value.try_into().unwrap_or_revert();
-            storage::read(key).unwrap_or_revert().unwrap_or_revert()
-        }
-    }
-}
-
-fn set_key<T: ToBytes + CLTyped>(name: &str, value: T) {
-    match runtime::get_key(name) {
-        Some(key) => {
-            let key_ref = key.try_into().unwrap_or_revert();
-            storage::write(key_ref, value);
-        }
-        None => {
-            let key = storage::new_uref(value).into();
-            runtime::put_key(name, key);
-        }
-    }
-}
-
-fn balance_key(account: &AccountHash) -> String {
-    format!("_balance_{}", account)
-}
 
 fn erc20_compatibility_key() -> String {
    format!("_erc20_compatibility_{}","erc20")
 }
 
-fn _authorize_operator(_operator: AccountHash, _holder: AccountHash) {
-  
-}
 
-fn _revoke_operator(_operator: AccountHash, _holder: AccountHash) {
-  
-}
-
-
-
-
-fn _is_operator_for(operator: AccountHash, token_holder: AccountHash) -> bool {
-     if operator == token_holder {
-                return true;
-     }
-     get_key::<U256>(&allowance_key(&operator, &token_holder)) == U256::one()
-     
-}
-
-
-fn allowance_key(owner: &AccountHash, sender: &AccountHash) -> String {
-    format!("allowances_{}_{}", owner, sender)
-}
 
 fn endpoint(name: &str, param: Vec<Parameter>, ret: CLType) -> EntryPoint {
     EntryPoint::new(

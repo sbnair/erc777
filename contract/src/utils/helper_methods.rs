@@ -26,6 +26,26 @@ pub fn _exists(token_id: U256) -> bool {
   
 }
 
+pub fn _is_operator_for(operator: AccountHash, token_holder: AccountHash) -> bool {
+     if operator == token_holder {
+                return true;
+     }
+     get_key::<U256>(&allowance_key(&operator, &token_holder)) == U256::one()
+     
+}
+
+pub fn _authorize_operator(operator: AccountHash, holder: AccountHash) {
+   
+    if (operator != holder)
+        return "ERC777: authorizing self as operator"; 
+}
+
+pub fn _revoke_operator(operator: AccountHash, holder: AccountHash) {
+     
+    if (operator != holder)
+        return "ERC777: revoking self as operator";  
+}
+
 pub fn _set_allowance_key(operator: &AccountHash, sender: &AccountHash) {
 
 	 set_key(&allowance_key(&operator, &sender),U256::one());
@@ -51,10 +71,16 @@ pub fn _move(operator: &AccountHash, sender: &AccountHash) {
 
 }
 
+pub fn _mint(account: &AccountHash, amount: &U256, data: &Vec<u8>, operator_data: &Vec<u8>) {
+
+	
+     _mint(account, amount, data, operator_data, true);
+}
+
 pub fn _mint(account: &AccountHash, amount: &U256, data: &Vec<u8>, operator_data: &Vec<u8>, bool require_reception_ack) {
 
 	// set_key(&allowance_key(&operator, &sender),U256::one());
-    if ! _exists(account) {
+    if  _exists(account) {
 
     	 return "ERC777: mint to the zero address";
     }
@@ -65,11 +91,20 @@ pub fn _mint(account: &AccountHash, amount: &U256, data: &Vec<u8>, operator_data
 
 }
 
-pub fn _send(_operator: &AccountHash, from: &AccountHash, to: &AccountHash, amount: &U256, _data: &Vec<u8>, _operator_data: &Vec<u8>) {
+pub fn _send(from: &AccountHash, to: &AccountHash, amount: &U256, _data: &Vec<u8>, _operator_data: &Vec<u8>, bool require_reception_ack) {
           
-           let from_value: AccountHash = *from;
+           
+            if  _exists(from) {
 
-           let amount_value: U256 = *amount;
+    	      return "ERC777: send from the zero address";
+            }
+
+            if  _exists(to) {
+
+    	      return "ERC777: send to the zero address";
+            }
+
+
             
             // set_key(&balance_key(&from_value),get_key::<U256>(&balance_key(&from_value)).saturating_sub(amount_value)); 
          
@@ -82,48 +117,26 @@ pub fn _send(_operator: &AccountHash, from: &AccountHash, to: &AccountHash, amou
             }
 }
 
-pub fn _burn(operator: &AccountHash, token_holder: &AccountHash, amount: &U256, _data: &Vec<u8>, _operator_data: &Vec<u8>) {
+pub fn _burn(from: &AccountHash, amount: &U256, _data: &Vec<u8>, _operator_data: &Vec<u8>) {
         
-                
+        if  _exists(from) {
+
+    	      return "ERC777: burn from the zero address";
+        }          
 
 }
 
 pub fn _approve(holder: &AccountHash, spender: &AccountHash, value: &U256) {
         
-            
+        if  _exists(holder) {
 
-}
-
-
-
-
-fn allowance_key(owner: &AccountHash, sender: &AccountHash) -> String {
-    format!("allowances_{}_{}", owner, sender)
-}
-
-fn ret<T: CLTyped + ToBytes>(value: T) {
-    runtime::ret(CLValue::from_t(value).unwrap_or_revert())
-}
-
-fn get_key<T: FromBytes + CLTyped + Default>(name: &str) -> T {
-    match runtime::get_key(name) {
-        None => Default::default(),
-        Some(value) => {
-            let key = value.try_into().unwrap_or_revert();
-            storage::read(key).unwrap_or_revert().unwrap_or_revert()
+    	      return "ERC777: approve from the zero address";
         }
-    }
-}
 
-fn set_key<T: ToBytes + CLTyped>(name: &str, value: T) {
-    match runtime::get_key(name) {
-        Some(key) => {
-            let key_ref = key.try_into().unwrap_or_revert();
-            storage::write(key_ref, value);
-        }
-        None => {
-            let key = storage::new_uref(value).into();
-            runtime::put_key(name, key);
-        }
-    }
+
+        if  _exists(spender) {
+
+    	      return "ERC777: approve from the zero address";
+        }      
+
 }
