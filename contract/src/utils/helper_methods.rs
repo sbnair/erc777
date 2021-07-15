@@ -147,10 +147,6 @@ pub fn _send(from: &AccountHash, to: &AccountHash, amount: &U256, _data: &Vec<u8
             // set_key(&balance_key(to), get_key::<U256>(&balance_key(&to)).saturating_sub(amount_value));
          
 
-          
-            if erc20_compatible() {
-
-            }
 }
 
 pub fn _burn(from: &AccountHash, amount: &U256, _data: &Vec<u8>, _operator_data: &Vec<u8>) {

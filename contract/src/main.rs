@@ -239,16 +239,7 @@ pub extern "C" fn burn() {
     _burn(&runtime::get_caller(), &runtime::get_caller(), &amount, &data, &Vec::new());
 }
 
-#[no_mangle]
-pub extern "C" fn disableERC20() {
-     set_key(&erc20_compatibility_key(), U256::zero());                
-}
 
-#[no_mangle]      
-pub extern "C" fn enableERC20() {
-     set_key(&erc20_compatibility_key(), U256::one());         
-              
-}
 
 #[no_mangle]
 pub extern "C" fn operator_send() {
@@ -310,9 +301,7 @@ pub extern "C" fn mint() {
           
     _mint(&token_holder, &amount, &data, &operator_data);
        
-    if erc20_compatible() {
-              //  self.Transfer(AccountHash::zero(), token_holder, amount);
-     }
+    
 }
 
 // All session code must have a `call` entrypoint.
@@ -519,11 +508,6 @@ pub extern "C" fn call() {
 }
 
 
-fn erc20_compatibility_key() -> String {
-   format!("_erc20_compatibility_{}","erc20")
-}
-
-
 
 fn endpoint(name: &str, param: Vec<Parameter>, ret: CLType) -> EntryPoint {
     EntryPoint::new(
@@ -535,8 +519,3 @@ fn endpoint(name: &str, param: Vec<Parameter>, ret: CLType) -> EntryPoint {
     )
 }
 
-
-/// Reads the current state of the ERC20 compatibility setting
-pub fn erc20_compatible() -> bool {
-    get_key::<U256>(&erc20_compatibility_key()) == U256::one()
-}
