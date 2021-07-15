@@ -81,11 +81,31 @@ pub fn _call_tokens_received(operator: &AccountHash, from: &AccountHash, to: &Ac
 
 }
 
-pub fn _move(operator: &AccountHash, sender: &AccountHash) {
+pub fn _before_token_transfer(operator: &AccountHash, from: &AccountHash, to: &AccountHash, amount: &U256) {
 
-	// set_key(&allowance_key(&operator, &sender),U256::one());
+    // set_key(&allowance_key(&operator, &sender),U256::one());
 
 }
+
+pub fn _move(operator: &AccountHash, from: &AccountHash, to: &AccountHash, amount: &U256, user_data: &Vec<u8>, operator_data: &Vec<u8> ) {
+
+	// set_key(&allowance_key(&operator, &sender),U256::one());
+    _before_token_transfer(operator, from, to, amount);
+
+     let from_balance: U256 = get_key::<U256>(&balance_key(&from));
+
+     if from_balance >= amount {
+
+         return "ERC777: transfer amount exceeds balance";
+     }
+
+     set_key(&balance_key(&from),get_key::<U256>(&balance_key(&from)).saturating_sub(amount));
+
+     set_key(&balance_key(&to),get_key::<U256>(&balance_key(&to)).saturating_add(amount));
+
+
+}
+
 
 pub fn _mint(account: &AccountHash, amount: &U256, data: &Vec<u8>, operator_data: &Vec<u8>) {
 

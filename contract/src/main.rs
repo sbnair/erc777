@@ -78,6 +78,12 @@ pub extern "C" fn symbol() {
 }
 
 #[no_mangle]
+pub extern "C" fn decimals() {
+    let val: U256 = 18;
+    ret(val)
+}
+
+#[no_mangle]
 pub extern "C" fn total_supply() {
     let val: U256 = get_key("total_supply");
     ret(val)
@@ -92,7 +98,7 @@ pub extern "C" fn balance_of() {
 
 #[no_mangle]
 pub extern "C" fn granularity() {
-    let val: U256 = get_key("granularity");
+    let val: U256 = 1;
     ret(val)
 }
 
@@ -130,7 +136,13 @@ pub extern "C" fn transfer() {
     if  _exists(recipient) {
 
               ret("ERC777: transfer to the zero address");
-    }    
+    }
+
+    _call_tokens_to_send(from, from, recipient, amount, "", "");
+
+    _move(from, from, recipient, amount, "", "");
+
+    _call_tokens_received(from, from, recipient, amount, "", "", false);    
   
     ret(true);
     
@@ -144,7 +156,7 @@ pub extern "C" fn transfer_from() {
 
     let recipient: AccountHash = runtime::get_named_arg("recipient");
 
-    let sender: AccountHash = runtime::get_caller();
+    let spender: AccountHash = runtime::get_caller();
 
     let amount: U256 = runtime::get_named_arg("amount");
 
@@ -156,7 +168,23 @@ pub extern "C" fn transfer_from() {
     if  _exists(holder) {
 
               ret("ERC777: transfer from the zero address");
-    }    
+    }
+
+    _call_tokens_to_send(from, from, recipient, amount, "", "");
+
+    _move(from, from, recipient, amount, "", "");
+
+    let current_allowance: U256 = get_key::<U256>(&allowance_key(&holder, &spender));
+
+    if current_allowance >= amount {
+
+        ret("ERC777: transfer amount exceeds allowance");
+    }
+
+    _approve(holder, spender, get_key::<U256>(current_allowance).saturating_sub(amount));
+
+     _call_tokens_received(spender, holder, recipient, amount, "", "", false); 
+
   
     ret(true);
     
@@ -292,57 +320,201 @@ pub extern "C" fn mint() {
 pub extern "C" fn call() {
    
     let token_name: String = runtime::get_named_arg("token_name");
+   
     let token_symbol: String = runtime::get_named_arg("token_symbol");
+   
     let token_total_supply: U256 = runtime::get_named_arg("token_total_supply");
+   
     let token_granularity: U256 = runtime::get_named_arg("token_granularity");
+   
     let token_default_operators: Vec<AccountHash> = runtime::get_named_arg("token_default_operators"); 
     // Get the optional first argument supplied to the argument.
     let value: String = runtime::get_named_arg(ARG_MESSAGE);
     store(value);
     let mut entry_points = EntryPoints::new(); 
-    entry_points.add_entry_point(endpoint("name", vec![], CLType::String));
-    entry_points.add_entry_point(endpoint("symbol", vec![], CLType::String));
+    entry_points.add_entry_point(endpoint("name", vec![], CLType::Unit));
+
+    entry_points.add_entry_point(endpoint("symbol", vec![], CLType::Unit));
+    
     entry_points.add_entry_point(endpoint("total_supply", vec![], CLType::U256));
+    
     entry_points.add_entry_point(endpoint("granularity", vec![], CLType::U256));
+    
     entry_points.add_entry_point(endpoint("default_operators", vec![], AccountHash::cl_type()));
+    
     entry_points.add_entry_point(endpoint(
         "balance_of",
         vec![Parameter::new("account", AccountHash::cl_type())],
-        CLType::U256,
+        CLType::Unit,
     ));
+
      entry_points.add_entry_point(endpoint(
         "authorize_operator",
         vec![Parameter::new("operator", AccountHash::cl_type())],
-        CLType::U256,
+        CLType::Unit,
     ));
+
     entry_points.add_entry_point(endpoint(
         "revoke_operator",
         vec![Parameter::new("operator", AccountHash::cl_type())],
-        CLType::U256,
+        CLType::Unit,
+    ));
+
+    entry_points.add_entry_point(endpoint(
+        "transfer",
+        vec![Parameter::new("recipient", AccountHash::cl_type()),
+
+             Parameter::new("from", AccountHash::cl_type()),
+             
+             Parameter::new("data", CLType::U256),          
+        ],
+        CLType::Unit,
+    ));
+
+    entry_points.add_entry_point(endpoint(
+        "transfer_from",
+        vec![Parameter::new("holder", AccountHash::cl_type()),
+
+             Parameter::new("recipient", AccountHash::cl_type()),
+             
+             Parameter::new("sender", AccountHash::cl_type()),  
+             
+             Parameter::new("amount", CLType::U256),
+
+        ],
+        CLType::Unit,
+    ));
+
+    entry_points.add_entry_point(endpoint(
+        "is_operator_for",
+        vec![Parameter::new("holder", AccountHash::cl_type()),
+
+             Parameter::new("recipient", AccountHash::cl_type()),
+             
+             Parameter::new("sender", AccountHash::cl_type()),  
+             
+             Parameter::new("amount", CLType::U256),
+
+        ],
+        CLType::Unit,
+    ));
+
+
+    entry_points.add_entry_point(endpoint(
+        "approve",
+        vec![Parameter::new("holder", AccountHash::cl_type()),
+
+             Parameter::new("spender", AccountHash::cl_type()),
+             
+             Parameter::new("value", CLType::U256),  
+        ],
+        CLType::Unit,
+    ));
+
+    entry_points.add_entry_point(endpoint(
+        "send",
+        vec![Parameter::new("to", AccountHash::cl_type()),
+
+             Parameter::new("amount", CLType::U256),
+             
+             Parameter::new("data", Bytes::cl_type()),  
+        ],
+        CLType::Unit,
+    ));
+
+    entry_points.add_entry_point(endpoint(
+        "burn",
+        vec![Parameter::new("amount", CLType::U256),
+             
+             Parameter::new("data", Bytes::cl_type()),  
+        ],
+        CLType::Unit,
+    ));
+
+    entry_points.add_entry_point(endpoint(
+        "operator_send",
+        vec![Parameter::new("sender", AccountHash::cl_type()),
+
+             Parameter::new("recipient", AccountHash::cl_type()),
+             
+             Parameter::new("amount", CLType::U256), 
+
+             Parameter::new("data", Bytes::cl_type()),  
+
+             Parameter::new("operator_data", Bytes::cl_type()),  
+             
+        ],
+        CLType::Unit,
+    ));
+
+    entry_points.add_entry_point(endpoint(
+        "operator_burn",
+        vec![Parameter::new("account", AccountHash::cl_type()),
+
+             Parameter::new("amount", CLType::U256), 
+
+             Parameter::new("data", Bytes::cl_type()),  
+
+             Parameter::new("operator_data", Bytes::cl_type()),  
+             
+        ],
+        CLType::Unit,
+    ));
+
+    entry_points.add_entry_point(endpoint(
+        "allowance",
+        vec![Parameter::new("holder", AccountHash::cl_type()),
+
+             Parameter::new("spender", CLType::U256), 
+        ],
+        CLType::Unit,
+    ));
+
+    entry_points.add_entry_point(endpoint(
+        "mint",
+        vec![Parameter::new("token_holder", AccountHash::cl_type()),
+
+             Parameter::new("amount", CLType::U256), 
+
+             Parameter::new("data", Bytes::cl_type()),  
+
+             Parameter::new("operator_data", Bytes::cl_type()),  
+        ],
+        CLType::Unit,
     ));
 
     let mut named_keys = NamedKeys::new();
+    
     named_keys.insert("name".to_string(), storage::new_uref(token_name).into());
+    
     named_keys.insert("symbol".to_string(), storage::new_uref(token_symbol).into());
+    
     named_keys.insert(
         "total_supply".to_string(),
         storage::new_uref(token_total_supply).into(),
     );
+    
     named_keys.insert(
         "granularity".to_string(),
         storage::new_uref(token_granularity).into(),
     );
+    
     named_keys.insert(
         "default_operators".to_string(),
         storage::new_uref(token_default_operators).into(),
     );
+    
     named_keys.insert(
         balance_key(&runtime::get_caller()),
         storage::new_uref(token_total_supply).into(),
     );
+    
     let (contract_hash, _) =
         storage::new_locked_contract(entry_points, Some(named_keys), None, None);
+    
     runtime::put_key("ERC777", contract_hash.into());
+    
+    runtime::put_key("ERC777_hash", storage::new_uref(contract_hash).into());
   
 }
 
