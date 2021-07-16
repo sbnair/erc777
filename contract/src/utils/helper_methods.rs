@@ -25,8 +25,6 @@ use types::{
 
 use super::mappings::*;
 
-use utils::mappings::*;
-
 
 pub fn _exists(token_id: U256) -> bool {
 
@@ -55,7 +53,7 @@ pub fn _authorize_operator(operator: AccountHash, holder: AccountHash) {
 
 pub fn _allowance(holder: AccountHash, spender: AccountHash) {
    
-    let val: U256 = get_key::<U256>(&allowance_key(&operator, &token_holder));
+    let val: U256 = get_key::<U256>(&allowance_key(&holder, &spender));
     ret(val);   
 }
 
@@ -114,10 +112,10 @@ pub fn _move(operator: AccountHash, from: AccountHash, to: AccountHash, amount: 
 pub fn _mint(account: AccountHash, amount: U256, data: Vec<u8>, operator_data: Vec<u8>) {
 
 	
-     _mint(account, amount, data, operator_data, true);
+     _mintcheck(account, amount, data, operator_data, true);
 }
 
-pub fn _mint(account: AccountHash, amount: U256, data: Vec<u8>, operator_data: Vec<u8>, require_reception_ack: bool) {
+pub fn _mintcheck(account: AccountHash, amount: U256, data: Vec<u8>, operator_data: Vec<u8>, require_reception_ack: bool) {
 
 	// set_key(&allowance_key(&operator, &sender),U256::one());
     if  _exists(account) {

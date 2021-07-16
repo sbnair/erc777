@@ -21,7 +21,7 @@ types = { package = "casper-types", version="1.2.0" }
 
 [[bin]]
 name = "contract"
-path = "src/main.rs"
+path = ["src/main.rs", "src/utils.rs"]
 bench = false
 doctest = false
 test = false
