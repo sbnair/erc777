@@ -210,7 +210,7 @@ pub extern "C" fn approve() {
     
     let value: U256 = runtime::get_named_arg("value");
     
-    _approve(&holder, &spender, &value);
+    _approve(holder, spender, value);
    
 }
 
@@ -224,7 +224,7 @@ pub extern "C" fn send() {
    
     let data: Vec<u8> = runtime::get_named_arg("data");
    
-    _send(&runtime::get_caller(), &runtime::get_caller(), &to, &amount, &data, &Vec::new());
+    _send(runtime::get_caller(), runtime::get_caller(), to, amount, data, Vec::new());
    
 }
 
@@ -236,7 +236,7 @@ pub extern "C" fn burn() {
     
     let data: Vec<u8> = runtime::get_named_arg("data");
     
-    _burn(&runtime::get_caller(), &runtime::get_caller(), &amount, &data, &Vec::new());
+    _burn(runtime::get_caller(), runtime::get_caller(), amount, data, Vec::new());
 }
 
 
@@ -254,13 +254,13 @@ pub extern "C" fn operator_send() {
     
     let operator_data: Vec<u8> = runtime::get_named_arg("operator_data");
 
-     if _is_operator_for(&runtime::get_caller(), &account) {
+     if _is_operator_for(runtime::get_caller(), account) {
        
          ret("ERC777: caller is not an operator for holder");
      
      }   
     
-    _send(&runtime::get_caller(), &from, &to, &amount, &data, &operator_data);
+    _send(runtime::get_caller(), from, to, amount, data, operator_data);
 }
 
 #[no_mangle]
@@ -274,11 +274,11 @@ pub extern "C" fn operator_burn() {
     
     let operator_data: Vec<u8> = runtime::get_named_arg("operator_data");
 
-    if _is_operator_for(&runtime::get_caller(), &account) {
+    if _is_operator_for(runtime::get_caller(), account) {
        ret("ERC777: caller is not an operator for holder"); 
     }
     
-    _burn(&runtime::get_caller(), &from, &amount, &data, &operator_data);
+    _burn(runtime::get_caller(), from, amount, data, operator_data);
 }
 
 
@@ -288,7 +288,7 @@ pub extern "C" fn allowance() {
    
     let spender: AccountHash = runtime::get_named_arg("spender");
     
-    _allowance(&holder, &spender);
+    _allowance(holder, spender);
 }
 
 #[no_mangle]
@@ -303,7 +303,7 @@ pub extern "C" fn mint() {
     let operator_data: Vec<u8> = runtime::get_named_arg("operator_data");
    
           
-    _mint(&token_holder, &amount, &data, &operator_data);
+    _mint(token_holder, amount, data, operator_data);
        
     
 }

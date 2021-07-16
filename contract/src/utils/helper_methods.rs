@@ -66,32 +66,32 @@ pub fn _revoke_operator(operator: AccountHash, holder: AccountHash) {
     }
 }
 
-pub fn _set_allowance_key(operator: &AccountHash, sender: &AccountHash, value: &U256) {
+pub fn _set_allowance_key(operator: AccountHash, sender: AccountHash, value: U256) {
 
 	 set_key(&allowance_key(&operator, &sender),value);
 
 }
 
 
-pub fn _call_tokens_to_send(operator: &AccountHash, from: &AccountHash, to: &AccountHash, amount: &U256, data: &Vec<u8>, operator_data: &Vec<u8>) {
+pub fn _call_tokens_to_send(operator: AccountHash, from: AccountHash, to: AccountHash, amount: U256, data: Vec<u8>, operator_data: Vec<u8>) {
 
 	// set_key(&allowance_key(&operator, &sender),U256::one());
 
 }
 
-pub fn _call_tokens_received(operator: &AccountHash, from: &AccountHash, to: &AccountHash, amount: &U256, data: &Vec<u8>, operator_data: &Vec<u8>, require_reception_ack: bool) {
+pub fn _call_tokens_received(operator: AccountHash, from: AccountHash, to: AccountHash, amount: U256, data: Vec<u8>, operator_data: Vec<u8>, require_reception_ack: bool) {
 
 	// set_key(&allowance_key(&operator, &sender),U256::one());
 
 }
 
-pub fn _before_token_transfer(operator: &AccountHash, from: &AccountHash, to: &AccountHash, amount: &U256) {
+pub fn _before_token_transfer(operator: AccountHash, from: AccountHash, to: AccountHash, amount: U256) {
 
     // set_key(&allowance_key(&operator, &sender),U256::one());
 
 }
 
-pub fn _move(operator: &AccountHash, from: &AccountHash, to: &AccountHash, amount: &U256, user_data: &Vec<u8>, operator_data: &Vec<u8> ) {
+pub fn _move(operator: AccountHash, from: AccountHash, to: AccountHash, amount: U256, user_data: Vec<u8>, operator_data: Vec<u8> ) {
 
 	// set_key(&allowance_key(&operator, &sender),U256::one());
     _before_token_transfer(operator, from, to, amount);
@@ -111,13 +111,13 @@ pub fn _move(operator: &AccountHash, from: &AccountHash, to: &AccountHash, amoun
 }
 
 
-pub fn _mint(account: &AccountHash, amount: &U256, data: &Vec<u8>, operator_data: &Vec<u8>) {
+pub fn _mint(account: AccountHash, amount: U256, data: Vec<u8>, operator_data: Vec<u8>) {
 
 	
      _mint(account, amount, data, operator_data, true);
 }
 
-pub fn _mint(account: &AccountHash, amount: &U256, data: &Vec<u8>, operator_data: &Vec<u8>, require_reception_ack: bool) {
+pub fn _mint(account: AccountHash, amount: U256, data: Vec<u8>, operator_data: Vec<u8>, require_reception_ack: bool) {
 
 	// set_key(&allowance_key(&operator, &sender),U256::one());
     if  _exists(account) {
@@ -131,7 +131,7 @@ pub fn _mint(account: &AccountHash, amount: &U256, data: &Vec<u8>, operator_data
 
 }
 
-pub fn _send(from: &AccountHash, to: &AccountHash, amount: &U256, _data: &Vec<u8>, _operator_data: &Vec<u8>, require_reception_ack: bool) {
+pub fn _send(from: AccountHash, to: AccountHash, amount: U256, _data: Vec<u8>, _operator_data: Vec<u8>, require_reception_ack: bool) {
           
            
             if  _exists(from) {
@@ -153,7 +153,7 @@ pub fn _send(from: &AccountHash, to: &AccountHash, amount: &U256, _data: &Vec<u8
 
 }
 
-pub fn _burn(from: &AccountHash, amount: &U256, _data: &Vec<u8>, _operator_data: &Vec<u8>) {
+pub fn _burn(from: AccountHash, amount: U256, _data: Vec<u8>, _operator_data: Vec<u8>) {
         
         if  _exists(from) {
 
@@ -162,7 +162,7 @@ pub fn _burn(from: &AccountHash, amount: &U256, _data: &Vec<u8>, _operator_data:
 
 }
 
-pub fn _approve(holder: &AccountHash, spender: &AccountHash, value: &U256) {
+pub fn _approve(holder: AccountHash, spender: AccountHash, value: U256) {
         
         if  _exists(holder) {
 
