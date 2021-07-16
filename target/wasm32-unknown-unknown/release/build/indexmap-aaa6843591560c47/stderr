@@ -1,0 +1,9 @@
+error: could not copy "/home/ubuntu/repos/erc777/target/wasm32-unknown-unknown/release/build/indexmap-aaa6843591560c47/out/probe0.probe0.3a1fbbbh-cgu.0.rcgu.ll" to "/home/ubuntu/repos/erc777/target/wasm32-unknown-unknown/release/build/indexmap-aaa6843591560c47/out/probe0.ll": Operation not permitted (os error 1)
+
+error: aborting due to previous error
+
+error: could not copy "/home/ubuntu/repos/erc777/target/wasm32-unknown-unknown/release/build/indexmap-aaa6843591560c47/out/probe1.probe1.3a1fbbbh-cgu.0.rcgu.ll" to "/home/ubuntu/repos/erc777/target/wasm32-unknown-unknown/release/build/indexmap-aaa6843591560c47/out/probe1.ll": Operation not permitted (os error 1)
+
+error: aborting due to previous error
+
+warning: autocfg could not probe for `std`
