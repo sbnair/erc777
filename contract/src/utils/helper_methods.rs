@@ -40,7 +40,7 @@ pub fn _exists(token_id: U256) -> bool {
 
 pub fn _is_operator_for(operator: AccountHash, token_holder: AccountHash) -> bool {
      if operator == token_holder {
-                return true;
+                ret(true);
      }
      get_key::<U256>(&allowance_key(&operator, &token_holder)) == U256::one()
      
@@ -100,7 +100,7 @@ pub fn _move(operator: &AccountHash, from: &AccountHash, to: &AccountHash, amoun
 
      if from_balance >= amount {
 
-         return "ERC777: transfer amount exceeds balance";
+         ret("ERC777: transfer amount exceeds balance");
      }
 
      set_key(&balance_key(&from),get_key::<U256>(&balance_key(&from)).saturating_sub(amount));
@@ -122,7 +122,7 @@ pub fn _mint(account: &AccountHash, amount: &U256, data: &Vec<u8>, operator_data
 	// set_key(&allowance_key(&operator, &sender),U256::one());
     if  _exists(account) {
 
-    	 return "ERC777: mint to the zero address";
+    	 ret("ERC777: mint to the zero address");
     }
 
 	set_key(&"total_supply",get_key::<U256>("total_supply").saturating_sub(amount));   
@@ -136,12 +136,12 @@ pub fn _send(from: &AccountHash, to: &AccountHash, amount: &U256, _data: &Vec<u8
            
             if  _exists(from) {
 
-    	      return "ERC777: send from the zero address";
+    	      ret("ERC777: send from the zero address");
             }
 
             if  _exists(to) {
 
-    	      return "ERC777: send to the zero address";
+    	      ret("ERC777: send to the zero address");
             }
 
 
@@ -157,7 +157,7 @@ pub fn _burn(from: &AccountHash, amount: &U256, _data: &Vec<u8>, _operator_data:
         
         if  _exists(from) {
 
-    	      return "ERC777: burn from the zero address";
+    	      ret("ERC777: burn from the zero address");
         }          
 
 }
@@ -166,13 +166,13 @@ pub fn _approve(holder: &AccountHash, spender: &AccountHash, value: &U256) {
         
         if  _exists(holder) {
 
-    	      return "ERC777: approve from the zero address";
+    	      ret("ERC777: approve from the zero address");
         }
 
 
         if  _exists(spender) {
 
-    	      return "ERC777: approve from the zero address";
+    	      ret("ERC777: approve from the zero address");
         }
 
         _set_allowance_key(holder, spender, value);      
