@@ -25,6 +25,8 @@ use types::{
 
 use super::mappings::*;
 
+use utils::mappings::*;
+
 
 pub fn _exists(token_id: U256) -> bool {
 
@@ -46,20 +48,22 @@ pub fn _is_operator_for(operator: AccountHash, token_holder: AccountHash) -> boo
 
 pub fn _authorize_operator(operator: AccountHash, holder: AccountHash) {
    
-    if (operator != holder)
-        return "ERC777: authorizing self as operator"; 
+    if (operator != holder) {
+        ret("ERC777: authorizing self as operator"); 
+    }
 }
 
 pub fn _allowance(holder: AccountHash, spender: AccountHash) {
    
     let val: U256 = get_key::<U256>(&allowance_key(&operator, &token_holder));
-    ret(val)   
+    ret(val);   
 }
 
 pub fn _revoke_operator(operator: AccountHash, holder: AccountHash) {
      
-    if (operator != holder)
-        return "ERC777: revoking self as operator";  
+    if (operator != holder) {
+        ret("ERC777: revoking self as operator");  
+    }
 }
 
 pub fn _set_allowance_key(operator: &AccountHash, sender: &AccountHash, value: &U256) {
@@ -75,7 +79,7 @@ pub fn _call_tokens_to_send(operator: &AccountHash, from: &AccountHash, to: &Acc
 
 }
 
-pub fn _call_tokens_received(operator: &AccountHash, from: &AccountHash, to: &AccountHash, amount: &U256, data: &Vec<u8>, operator_data: &Vec<u8>, bool require_reception_ack) {
+pub fn _call_tokens_received(operator: &AccountHash, from: &AccountHash, to: &AccountHash, amount: &U256, data: &Vec<u8>, operator_data: &Vec<u8>, require_reception_ack: bool) {
 
 	// set_key(&allowance_key(&operator, &sender),U256::one());
 
@@ -113,7 +117,7 @@ pub fn _mint(account: &AccountHash, amount: &U256, data: &Vec<u8>, operator_data
      _mint(account, amount, data, operator_data, true);
 }
 
-pub fn _mint(account: &AccountHash, amount: &U256, data: &Vec<u8>, operator_data: &Vec<u8>, bool require_reception_ack) {
+pub fn _mint(account: &AccountHash, amount: &U256, data: &Vec<u8>, operator_data: &Vec<u8>, require_reception_ack: bool) {
 
 	// set_key(&allowance_key(&operator, &sender),U256::one());
     if  _exists(account) {
@@ -127,7 +131,7 @@ pub fn _mint(account: &AccountHash, amount: &U256, data: &Vec<u8>, operator_data
 
 }
 
-pub fn _send(from: &AccountHash, to: &AccountHash, amount: &U256, _data: &Vec<u8>, _operator_data: &Vec<u8>, bool require_reception_ack) {
+pub fn _send(from: &AccountHash, to: &AccountHash, amount: &U256, _data: &Vec<u8>, _operator_data: &Vec<u8>, require_reception_ack: bool) {
           
            
             if  _exists(from) {

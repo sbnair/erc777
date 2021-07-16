@@ -105,7 +105,7 @@ pub extern "C" fn granularity() {
 #[no_mangle]
 pub extern "C" fn default_operators() {
     let val: Vec<AccountHash> = Vec::new();
-    ret(val)
+    ret(val);
 }
 
 #[no_mangle]
@@ -254,8 +254,11 @@ pub extern "C" fn operator_send() {
     
     let operator_data: Vec<u8> = runtime::get_named_arg("operator_data");
 
-     if _is_operator_for(&runtime::get_caller(), &account) 
-        ret("ERC777: caller is not an operator for holder");
+     if _is_operator_for(&runtime::get_caller(), &account) {
+       
+         ret("ERC777: caller is not an operator for holder");
+     
+     }   
     
     _send(&runtime::get_caller(), &from, &to, &amount, &data, &operator_data);
 }
@@ -271,8 +274,9 @@ pub extern "C" fn operator_burn() {
     
     let operator_data: Vec<u8> = runtime::get_named_arg("operator_data");
 
-    if _is_operator_for(&runtime::get_caller(), &account) 
+    if _is_operator_for(&runtime::get_caller(), &account) {
        ret("ERC777: caller is not an operator for holder"); 
+    }
     
     _burn(&runtime::get_caller(), &from, &amount, &data, &operator_data);
 }

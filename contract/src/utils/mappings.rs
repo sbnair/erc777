@@ -8,7 +8,7 @@ use alloc::{
 
 use contract::{
 
-    contract_api::{runtime},
+    contract_api::{runtime, storage},
 
     unwrap_or_revert::UnwrapOrRevert,
 
@@ -20,7 +20,7 @@ use types::{
     
     bytesrepr::{ToBytes, FromBytes},
     
-    CLTyped, U256
+    CLTyped, U256, CLValue
 
 };
 
@@ -45,7 +45,7 @@ fn get_key<T: FromBytes + CLTyped + Default>(name: &str) -> T {
         None => Default::default(),
         Some(value) => {
             let key = value.try_into().unwrap_or_revert();
-            storage::read(key).unwrap_or_revert().unwrap_or_revert()
+            storage::read(key).unwrap_or_revert();
         }
     }
 }
