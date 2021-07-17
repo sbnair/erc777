@@ -6,7 +6,7 @@ use casper_types::{
 
 pub mod token_cfg {
     use super::*;
-    pub const NAME: &str = "ERC777 TOKEN";
+    pub const NAME: &str = "ERC777_TOKEN";
     pub const SYMBOL: &str = "ERC777";
     pub const DECIMALS: u8 = 8;
     pub fn total_supply() -> U256 {
@@ -84,7 +84,7 @@ impl Token {
             .context
             .query(self.ali, &[token_cfg::NAME.to_string(), name.to_string()])
         {
-            Err(_) => None,
+            Err(_) => panic!("error."),
             Ok(maybe_value) => {
                 let value = maybe_value
                     .into_t()
@@ -105,7 +105,7 @@ impl Token {
     }
 
     pub fn name(&self) -> String {
-        self.query_contract("name").unwrap_or_default()
+        self.query_contract("name").unwrap()
     }
 
     pub fn symbol(&self) -> String {
