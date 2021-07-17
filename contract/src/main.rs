@@ -186,7 +186,7 @@ pub extern "C" fn transfer_from() {
         ret("ERC777: transfer amount exceeds allowance");
     }
 
-    _approve(spender, holder, get_key::<U256>(current_allowance).saturating_sub(amount));
+    _approve(spender, holder, current_allowance.saturating_sub(amount));
 
      _call_tokens_received(spender, holder, recipient, amount, Vec::new(), Vec::new(), false); 
 
