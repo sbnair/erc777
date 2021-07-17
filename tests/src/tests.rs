@@ -1,69 +1,64 @@
-use crate::*;
-    use crate::ERC777::ERC777Interface;
-    use pwasm_std::String;
-    use pwasm_abi::types::*;
-    use pwasm_test::ext_reset;
-    use pwasm_std::keccak;
+use crate::erc777::{token_cfg, Sender, Token};
 
-    static TEST_NAME: &'static str = "TestToken";
-    static TEST_SYMBOL: &'static str = "TTK";
-    static TEST_GRANULARITY: u64 = 100000000000000;
+#[test]
+fn test_erc777_deploy() {
+    let t = Token::deployed();
+    assert_eq!(t.name(), token_cfg::NAME);
+    assert_eq!(t.symbol(), token_cfg::SYMBOL);
+    assert_eq!(t.decimals(), token_cfg::DECIMALS);
+    assert_eq!(t.balance_of(t.ali), token_cfg::total_supply());
+    assert_eq!(t.balance_of(t.bob), 0.into());
+    assert_eq!(t.allowance(t.ali, t.ali), 0.into());
+    assert_eq!(t.allowance(t.ali, t.bob), 0.into());
+    assert_eq!(t.allowance(t.bob, t.ali), 0.into());
+    assert_eq!(t.allowance(t.bob, t.bob), 0.into());
+}
 
-    fn test_owner_address() -> Address {
-        Address::from([0xea, 0x67, 0x4f, 0xdd, 0xe7, 0x14, 0xfd, 0x97, 0x9d, 0xe3, 0xed, 0xf0, 0xf5, 0x6a, 0xa9, 0x71, 0x6b, 0x89, 0x8e, 0xc8])
-    }
+#[test]
+fn test_erc777_transfer() {
+    let amount = 10.into();
+    let mut t = Token::deployed();
+    t.transfer(t.bob, amount, Sender(t.ali));
+    assert_eq!(t.balance_of(t.ali), token_cfg::total_supply() - amount);
+    assert_eq!(t.balance_of(t.bob), amount);
+}
 
-    fn init_test_contract() -> token::ERC777Contract {
-        let mut contract = token::ERC777Contract {};
-        // Here we're creating an External context using ExternalBuilder and set the `sender` to the `owner_address`
-        ext_reset(|e| e.sender(test_owner_address()));
+#[test]
+#[should_panic]
+fn test_erc777_transfer_too_much() {
+    let amount = 1.into();
+    let mut t = Token::deployed();
+    t.transfer(t.ali, amount, Sender(t.bob));
+}
 
-        let name = String::from(TEST_NAME);
-        let symbol = String::from(TEST_SYMBOL);
-        contract.constructor(name.clone(), symbol, U256::from(TEST_GRANULARITY));
-        contract
-    }
+#[test]
+fn test_erc777_approve() {
+    let amount = 10.into();
+    let mut t = Token::deployed();
+    t.approve(t.bob, amount, Sender(t.ali));
+    assert_eq!(t.balance_of(t.ali), token_cfg::total_supply());
+    assert_eq!(t.balance_of(t.bob), 0.into());
+    assert_eq!(t.allowance(t.ali, t.bob), amount);
+    assert_eq!(t.allowance(t.bob, t.ali), 0.into());
+}
 
-    #[test]
-    fn should_set_and_retrieve_the_correct_token_name() {
-        let mut contract = init_test_contract();
-        assert_eq!(contract.name(), TEST_NAME);
-    }
+#[test]
+fn test_erc777_transfer_from() {
+    let allowance = 10.into();
+    let amount = 3.into();
+    let mut t = Token::deployed();
+    t.approve(t.bob, allowance, Sender(t.ali));
+    t.transfer_from(t.ali, t.joe, amount, Sender(t.bob));
+    assert_eq!(t.balance_of(t.ali), token_cfg::total_supply() - amount);
+    assert_eq!(t.balance_of(t.bob), 0.into());
+    assert_eq!(t.balance_of(t.joe), amount);
+    assert_eq!(t.allowance(t.ali, t.bob), allowance - amount);
+}
 
-    #[test]
-    fn should_set_and_retrieve_the_correct_token_symbol() {
-        let mut contract = init_test_contract();
-        assert_eq!(contract.symbol(), TEST_SYMBOL);
-    }
-
-    #[test]
-    fn initial_total_supply_should_be_zero() {
-        let mut contract = init_test_contract();
-        assert_eq!(contract.totalSupply(), U256::zero());
-    }
-
-    #[test]
-    fn should_set_and_retrieve_granularity() {
-        let mut contract = init_test_contract();
-        assert_eq!(contract.granularity(), U256::from(TEST_GRANULARITY));
-    }
-
-    #[test]
-    fn should_authorize_operator() {
-        let mut contract = init_test_contract();
-        let operator = Address::from_low_u64_le(1u64);
-        assert_eq!(contract.isOperatorFor(test_owner_address(), test_owner_address()), true);
-        assert_eq!(contract.isOperatorFor(operator, test_owner_address()), false);
-        contract.authorizeOperator(operator);
-        assert_eq!(contract.isOperatorFor(operator, test_owner_address()), true);
-        contract.revokeOperator(operator);
-        assert_eq!(contract.isOperatorFor(operator, test_owner_address()), false);
-    }
-
-    compiletime_keccak::compiletime_keccak!(hashed_string);
-
-    #[test]
-    fn compare_compile_time_to_runtime_keccak() {
-        let hash = keccak(b"hashed_string");
-        assert_eq!(hashed_string(), hash);
-    }
+#[test]
+#[should_panic]
+fn test_erc777_transfer_from_too_much() {
+    let amount = token_cfg::total_supply().checked_add(1.into()).unwrap();
+    let mut t = Token::deployed();
+    t.transfer_from(t.ali, t.joe, amount, Sender(t.bob));
+}
