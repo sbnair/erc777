@@ -26,11 +26,11 @@ use types::{
 use super::mappings::*;
 
 
-pub fn _exists(token_id: U256) -> bool {
+pub fn _exists(_token_id: U256) -> bool {
 
 	let zero_addr: AccountHash = AccountHash::from_formatted_str("account.hash.000000000000000000000000000000000000000000").unwrap_or_default();
 
-	let owner: AccountHash = get_key(&owner_key(token_id));
+	let owner: AccountHash = get_key(&owner_key(_token_id));
 
 	owner != zero_addr
   
@@ -38,11 +38,11 @@ pub fn _exists(token_id: U256) -> bool {
 
 
 
-pub fn _exists_owner(owner_id: AccountHash) -> bool {
+pub fn _exists_owner(_owner_id: AccountHash) -> bool {
 
      let zero_addr: AccountHash = AccountHash::from_formatted_str("account.hash.000000000000000000000000000000000000000000").unwrap_or_default();
 
-     let owner: AccountHash = owner_id;
+     let owner: AccountHash = _owner_id;
 
      owner != zero_addr
    
@@ -50,108 +50,108 @@ pub fn _exists_owner(owner_id: AccountHash) -> bool {
 
 }
 
-pub fn _is_operator_for(operator: AccountHash, token_holder: AccountHash) -> bool {
-     if operator == token_holder {
+pub fn _is_operator_for(_operator: AccountHash, _token_holder: AccountHash) -> bool {
+     if _operator == _token_holder {
                 ret(true);
      }
-     get_key::<U256>(&allowance_key(&operator, &token_holder)) == U256::one()
+     get_key::<U256>(&allowance_key(&_operator, &_token_holder)) == U256::one()
      
 }
 
-pub fn _authorize_operator(operator: AccountHash, holder: AccountHash) {
+pub fn _authorize_operator(_operator: AccountHash, _holder: AccountHash) {
    
-    if (operator != holder) {
+    if (_operator != _holder) {
         ret("ERC777: authorizing self as operator"); 
     }
 }
 
-pub fn _allowance(holder: AccountHash, spender: AccountHash) {
+pub fn _allowance(_holder: AccountHash, _spender: AccountHash) {
    
-    let val: U256 = get_key::<U256>(&allowance_key(&holder, &spender));
+    let val: U256 = get_key::<U256>(&allowance_key(&_holder, &_spender));
     ret(val);   
 }
 
-pub fn _revoke_operator(operator: AccountHash, holder: AccountHash) {
+pub fn _revoke_operator(_operator: AccountHash, _holder: AccountHash) {
      
-    if (operator != holder) {
+    if (_operator != _holder) {
         ret("ERC777: revoking self as operator");  
     }
 }
 
-pub fn _set_allowance_key(operator: AccountHash, sender: AccountHash, value: U256) {
+pub fn _set_allowance_key(_operator: AccountHash, _sender: AccountHash, _value: U256) {
 
-	 set_key(&allowance_key(&operator, &sender),value);
+	 set_key(&allowance_key(&_operator, &_sender),_value);
 
 }
 
 
-pub fn _call_tokens_to_send(operator: AccountHash, from: AccountHash, to: AccountHash, amount: U256, data: Vec<u8>, operator_data: Vec<u8>) {
+pub fn _call_tokens_to_send(_operator: AccountHash, _from: AccountHash, _to: AccountHash, _amount: U256, _data: Vec<u8>, _operator_data: Vec<u8>) {
 
 	// set_key(&allowance_key(&operator, &sender),U256::one());
 
 }
 
-pub fn _call_tokens_received(operator: AccountHash, from: AccountHash, to: AccountHash, amount: U256, data: Vec<u8>, operator_data: Vec<u8>, require_reception_ack: bool) {
+pub fn _call_tokens_received(_operator: AccountHash, _from: AccountHash, _to: AccountHash, _amount: U256, _data: Vec<u8>, _operator_data: Vec<u8>, _require_reception_ack: bool) {
 
-	// set_key(&allowance_key(&operator, &sender),U256::one());
+	// set_key(&allowance_key(&_operator, &_sender),U256::one());
 
 }
 
-pub fn _before_token_transfer(operator: AccountHash, from: AccountHash, to: AccountHash, amount: U256) {
+pub fn _before_token_transfer(_operator: AccountHash, _from: AccountHash, _to: AccountHash, _amount: U256) {
 
     // set_key(&allowance_key(&operator, &sender),U256::one());
 
 }
 
-pub fn _move(operator: AccountHash, from: AccountHash, to: AccountHash, amount: U256, user_data: Vec<u8>, operator_data: Vec<u8> ) {
+pub fn _move(_operator: AccountHash, _from: AccountHash, _to: AccountHash, _amount: U256, _user_data: Vec<u8>, _operator_data: Vec<u8> ) {
 
 	// set_key(&allowance_key(&operator, &sender),U256::one());
-    _before_token_transfer(operator, from, to, amount);
+    _before_token_transfer(_operator, _from, _to, _amount);
 
-     let from_balance: U256 = get_key::<U256>(&balance_key(&from));
+     let from_balance: U256 = get_key::<U256>(&balance_key(&_from));
 
-     if from_balance >= amount {
+     if from_balance >= _amount {
 
          ret("ERC777: transfer amount exceeds balance");
      }
 
-     set_key(&balance_key(&from),get_key::<U256>(&balance_key(&from)).saturating_sub(amount));
+     set_key(&balance_key(&_from),get_key::<U256>(&balance_key(&_from)).saturating_sub(_amount));
 
-     set_key(&balance_key(&to),get_key::<U256>(&balance_key(&to)).saturating_add(amount));
+     set_key(&balance_key(&_to),get_key::<U256>(&balance_key(&_to)).saturating_add(_amount));
 
 
 }
 
 
-pub fn _mint(account: AccountHash, amount: U256, data: Vec<u8>, operator_data: Vec<u8>) {
+pub fn _mint(_account: AccountHash, _amount: U256, _data: Vec<u8>, _operator_data: Vec<u8>) {
 
 	
-     _mintcheck(account, amount, data, operator_data, true);
+     _mintcheck(_account, _amount, _data, _operator_data, true);
 }
 
-pub fn _mintcheck(account: AccountHash, amount: U256, data: Vec<u8>, operator_data: Vec<u8>, require_reception_ack: bool) {
+pub fn _mintcheck(_account: AccountHash, _amount: U256, _data: Vec<u8>, _operator_data: Vec<u8>, _require_reception_ack: bool) {
 
 	// set_key(&allowance_key(&operator, &sender),U256::one());
-    if  _exists_owner(account) {
+    if  _exists_owner(_account) {
 
     	 ret("ERC777: mint to the zero address");
     }
 
-	set_key(&"total_supply",get_key::<U256>("total_supply").saturating_sub(amount));   
+	set_key(&"total_supply",get_key::<U256>("total_supply").saturating_sub(_amount));   
         
-    set_key(&balance_key(&account),get_key::<U256>(&balance_key(&account)).saturating_sub(amount));
+    set_key(&balance_key(&_account),get_key::<U256>(&balance_key(&_account)).saturating_sub(_amount));
 
 }
 
-pub fn _send(from: AccountHash, to: AccountHash, amount: U256, _data: Vec<u8>, _operator_data: Vec<u8>, require_reception_ack: bool) {
+pub fn _send(_from: AccountHash, _to: AccountHash, _amount: U256, _data: Vec<u8>, _operator_data: Vec<u8>, _require_reception_ack: bool) {
           
            
-            if  _exists_owner(from) {
+            if  _exists_owner(_from) {
 
     	      ret("ERC777: send from the zero address");
             }
 
-            if  _exists_owner(to) {
+            if  _exists_owner(_to) {
 
     	      ret("ERC777: send to the zero address");
             }
@@ -165,28 +165,28 @@ pub fn _send(from: AccountHash, to: AccountHash, amount: U256, _data: Vec<u8>, _
 
 }
 
-pub fn _burn(from: AccountHash, amount: U256, _data: Vec<u8>, _operator_data: Vec<u8>) {
+pub fn _burn(_from: AccountHash, _amount: U256, _data: Vec<u8>, _operator_data: Vec<u8>) {
         
-        if  _exists_owner(from) {
+        if  _exists_owner(_from) {
 
     	      ret("ERC777: burn from the zero address");
         }          
 
 }
 
-pub fn _approve(holder: AccountHash, spender: AccountHash, value: U256) {
+pub fn _approve(_holder: AccountHash, _spender: AccountHash, _value: U256) {
         
-        if  _exists_owner(holder) {
+        if  _exists_owner(_holder) {
 
     	      ret("ERC777: approve from the zero address");
         }
 
 
-        if  _exists_owner(spender) {
+        if  _exists_owner(_spender) {
 
     	      ret("ERC777: approve from the zero address");
         }
 
-        _set_allowance_key(holder, spender, value);      
+        _set_allowance_key(_holder, _spender, _value);      
 
 }
