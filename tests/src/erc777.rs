@@ -20,6 +20,10 @@ pub mod token_cfg {
         let val: Vec<AccountHash> = Vec::new();
         return val; 
      }
+    pub fn token_message() -> String {
+       return "special_value".to_string(); 
+    }  
+ 
 }
 
 pub struct Sender(pub AccountHash);
@@ -51,7 +55,8 @@ impl Token {
             "token_decimals" => token_cfg::DECIMALS,
             "token_total_supply" => token_cfg::total_supply(),
             "token_granularity" =>  token_cfg::total_granularity(),
-            "token_default_operators" => token_cfg::token_default_operators()
+            "token_default_operators" => token_cfg::token_default_operators(),
+            "message" => token_cfg::token_message()
         };
         let session = SessionBuilder::new(session_code, session_args)
             .with_address(alic.to_account_hash())
@@ -100,7 +105,7 @@ impl Token {
     }
 
     pub fn name(&self) -> String {
-        self.query_contract("name").unwrap()
+        self.query_contract("name").unwrap_or_default()
     }
 
     pub fn symbol(&self) -> String {
@@ -112,12 +117,12 @@ impl Token {
     }
 
     pub fn balance_of(&self, account: AccountHash) -> U256 {
-        let key = format!("balances_{}", account)
+        let key = format!("balances_{}", account);
         self.query_contract(&key).unwrap_or_default()
     }
 
     pub fn allowance(&self, owner: AccountHash, spender: AccountHash) -> U256 {
-        let key = format!("allowances_{}_{}", owner, spender)
+        let key = format!("allowances_{}_{}", owner, spender);
         self.query_contract(&key).unwrap_or_default()
     }
 
