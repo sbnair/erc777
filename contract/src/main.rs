@@ -44,7 +44,12 @@ use types::{
 
 };
 
-mod utils;
+// mod utils;
+
+pub mod utils {
+    pub mod helper_methods;
+    pub mod mappings;
+}
 
 use utils::helper_methods::*;
 
@@ -79,7 +84,7 @@ pub extern "C" fn symbol() {
 
 #[no_mangle]
 pub extern "C" fn decimals() {
-    let val: U256 = 18;
+    let val: U256 = U256::from(18);
     ret(val)
 }
 
@@ -98,7 +103,7 @@ pub extern "C" fn balance_of() {
 
 #[no_mangle]
 pub extern "C" fn granularity() {
-    let val: U256 = 1;
+    let val: U256 = U256::from(1);
     ret(val)
 }
 
@@ -133,16 +138,16 @@ pub extern "C" fn transfer() {
 
     let amount: U256 = runtime::get_named_arg("amount");
 
-    if  _exists(recipient) {
+    if  _exists_owner(recipient) {
 
               ret("ERC777: transfer to the zero address");
     }
 
-    _call_tokens_to_send(from, from, recipient, amount, "", "");
+    _call_tokens_to_send(from, from, recipient, amount, Vec::new(), Vec::new());
 
-    _move(from, from, recipient, amount, "", "");
+    _move(from, from, recipient, amount, Vec::new(), Vec::new());
 
-    _call_tokens_received(from, from, recipient, amount, "", "", false);    
+    _call_tokens_received(from, from, recipient, amount, Vec::new(), Vec::new(), false);    
   
     ret(true);
     
@@ -160,19 +165,19 @@ pub extern "C" fn transfer_from() {
 
     let amount: U256 = runtime::get_named_arg("amount");
 
-    if  _exists(recipient) {
+    if  _exists_owner(recipient) {
 
               ret("ERC777: transfer to the zero address");
     }
 
-    if  _exists(holder) {
+    if  _exists_owner(holder) {
 
               ret("ERC777: transfer from the zero address");
     }
 
-    _call_tokens_to_send(from, from, recipient, amount, "", "");
+    _call_tokens_to_send(spender, holder, recipient, amount, Vec::new(), Vec::new());
 
-    _move(from, from, recipient, amount, "", "");
+    _move(spender, holder, recipient, amount, Vec::new(), Vec::new());
 
     let current_allowance: U256 = get_key::<U256>(&allowance_key(&holder, &spender));
 
@@ -181,9 +186,9 @@ pub extern "C" fn transfer_from() {
         ret("ERC777: transfer amount exceeds allowance");
     }
 
-    _approve(holder, spender, get_key::<U256>(current_allowance).saturating_sub(amount));
+    _approve(spender, holder, get_key::<U256>(current_allowance).saturating_sub(amount));
 
-     _call_tokens_received(spender, holder, recipient, amount, "", "", false); 
+     _call_tokens_received(spender, holder, recipient, amount, Vec::new(), Vec::new(), false); 
 
   
     ret(true);
@@ -224,7 +229,7 @@ pub extern "C" fn send() {
    
     let data: Vec<u8> = runtime::get_named_arg("data");
    
-    _send(runtime::get_caller(), runtime::get_caller(), to, amount, data, Vec::new());
+    _send(runtime::get_caller(), to, amount, data, Vec::new(), true);
    
 }
 
@@ -236,7 +241,7 @@ pub extern "C" fn burn() {
     
     let data: Vec<u8> = runtime::get_named_arg("data");
     
-    _burn(runtime::get_caller(), runtime::get_caller(), amount, data, Vec::new());
+    _burn(runtime::get_caller(), amount, data, Vec::new());
 }
 
 
@@ -244,9 +249,9 @@ pub extern "C" fn burn() {
 #[no_mangle]
 pub extern "C" fn operator_send() {
     
-    let sender: AccountHash = runtime::get_named_arg("sender");
+   // let sender: AccountHash = runtime::get_named_arg("sender");
     
-    let recipient: AccountHash = runtime::get_named_arg("recipient");
+    let to: AccountHash = runtime::get_named_arg("recipient");
     
     let amount: U256 = runtime::get_named_arg("amount");
     
@@ -254,13 +259,13 @@ pub extern "C" fn operator_send() {
     
     let operator_data: Vec<u8> = runtime::get_named_arg("operator_data");
 
-     if _is_operator_for(runtime::get_caller(), account) {
+     if _is_operator_for(runtime::get_caller(), to) {
        
          ret("ERC777: caller is not an operator for holder");
      
      }   
     
-    _send(runtime::get_caller(), from, to, amount, data, operator_data);
+    _send(runtime::get_caller(), to, amount, data, operator_data, true);
 }
 
 #[no_mangle]
@@ -278,7 +283,7 @@ pub extern "C" fn operator_burn() {
        ret("ERC777: caller is not an operator for holder"); 
     }
     
-    _burn(runtime::get_caller(), from, amount, data, operator_data);
+    _burn(runtime::get_caller(), amount, data, operator_data);
 }
 
 
@@ -410,7 +415,7 @@ pub extern "C" fn call() {
 
              Parameter::new("amount", CLType::U256),
              
-             Parameter::new("data", Bytes::cl_type()),  
+             Parameter::new("data", CLType::List(Box::new(CLType::U8))),  
         ],
         CLType::Unit,
     ));
@@ -419,7 +424,7 @@ pub extern "C" fn call() {
         "burn",
         vec![Parameter::new("amount", CLType::U256),
              
-             Parameter::new("data", Bytes::cl_type()),  
+             Parameter::new("data", CLType::List(Box::new(CLType::U8))),  
         ],
         CLType::Unit,
     ));
@@ -432,9 +437,9 @@ pub extern "C" fn call() {
              
              Parameter::new("amount", CLType::U256), 
 
-             Parameter::new("data", Bytes::cl_type()),  
+             Parameter::new("data", CLType::List(Box::new(CLType::U8))),  
 
-             Parameter::new("operator_data", Bytes::cl_type()),  
+             Parameter::new("operator_data", CLType::List(Box::new(CLType::U8))),  
              
         ],
         CLType::Unit,
@@ -446,9 +451,9 @@ pub extern "C" fn call() {
 
              Parameter::new("amount", CLType::U256), 
 
-             Parameter::new("data", Bytes::cl_type()),  
+             Parameter::new("data", CLType::List(Box::new(CLType::U8))),  
 
-             Parameter::new("operator_data", Bytes::cl_type()),  
+             Parameter::new("operator_data", CLType::List(Box::new(CLType::U8))),  
              
         ],
         CLType::Unit,
@@ -469,9 +474,9 @@ pub extern "C" fn call() {
 
              Parameter::new("amount", CLType::U256), 
 
-             Parameter::new("data", Bytes::cl_type()),  
+             Parameter::new("data", CLType::List(Box::new(CLType::U8))),  
 
-             Parameter::new("operator_data", Bytes::cl_type()),  
+             Parameter::new("operator_data", CLType::List(Box::new(CLType::U8))),  
         ],
         CLType::Unit,
     ));

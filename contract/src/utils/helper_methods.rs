@@ -36,6 +36,20 @@ pub fn _exists(token_id: U256) -> bool {
   
 }
 
+
+
+pub fn _exists_owner(owner_id: AccountHash) -> bool {
+
+     let zero_addr: AccountHash = AccountHash::from_formatted_str("account.hash.000000000000000000000000000000000000000000").unwrap_or_default();
+
+     let owner: AccountHash = owner_id;
+
+     owner != zero_addr
+   
+
+
+}
+
 pub fn _is_operator_for(operator: AccountHash, token_holder: AccountHash) -> bool {
      if operator == token_holder {
                 ret(true);
@@ -118,26 +132,26 @@ pub fn _mint(account: AccountHash, amount: U256, data: Vec<u8>, operator_data: V
 pub fn _mintcheck(account: AccountHash, amount: U256, data: Vec<u8>, operator_data: Vec<u8>, require_reception_ack: bool) {
 
 	// set_key(&allowance_key(&operator, &sender),U256::one());
-    if  _exists(account) {
+    if  _exists_owner(account) {
 
     	 ret("ERC777: mint to the zero address");
     }
 
 	set_key(&"total_supply",get_key::<U256>("total_supply").saturating_sub(amount));   
         
-    set_key(&balance_key(&token_holder),get_key::<U256>(&balance_key(&token_holder)).saturating_sub(amount));
+    set_key(&balance_key(&account),get_key::<U256>(&balance_key(&account)).saturating_sub(amount));
 
 }
 
 pub fn _send(from: AccountHash, to: AccountHash, amount: U256, _data: Vec<u8>, _operator_data: Vec<u8>, require_reception_ack: bool) {
           
            
-            if  _exists(from) {
+            if  _exists_owner(from) {
 
     	      ret("ERC777: send from the zero address");
             }
 
-            if  _exists(to) {
+            if  _exists_owner(to) {
 
     	      ret("ERC777: send to the zero address");
             }
@@ -153,7 +167,7 @@ pub fn _send(from: AccountHash, to: AccountHash, amount: U256, _data: Vec<u8>, _
 
 pub fn _burn(from: AccountHash, amount: U256, _data: Vec<u8>, _operator_data: Vec<u8>) {
         
-        if  _exists(from) {
+        if  _exists_owner(from) {
 
     	      ret("ERC777: burn from the zero address");
         }          
@@ -162,13 +176,13 @@ pub fn _burn(from: AccountHash, amount: U256, _data: Vec<u8>, _operator_data: Ve
 
 pub fn _approve(holder: AccountHash, spender: AccountHash, value: U256) {
         
-        if  _exists(holder) {
+        if  _exists_owner(holder) {
 
     	      ret("ERC777: approve from the zero address");
         }
 
 
-        if  _exists(spender) {
+        if  _exists_owner(spender) {
 
     	      ret("ERC777: approve from the zero address");
         }

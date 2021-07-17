@@ -32,15 +32,19 @@ pub fn balance_key(account: &AccountHash) -> String {
 }
 
 
-fn allowance_key(owner: &AccountHash, sender: &AccountHash) -> String {
+pub fn allowance_key(owner: &AccountHash, sender: &AccountHash) -> String {
     format!("allowances_{}_{}", owner, sender)
 }
 
-fn ret<T: CLTyped + ToBytes>(value: T) {
+pub fn owner_key(token_id: U256) -> String {
+    format!("_owner_{}",token_id);
+}
+
+pub fn ret<T: CLTyped + ToBytes>(value: T) {
     runtime::ret(CLValue::from_t(value).unwrap_or_revert())
 }
 
-fn get_key<T: FromBytes + CLTyped + Default>(name: &str) -> T {
+pub fn get_key<T: FromBytes + CLTyped + Default>(name: &str) -> T {
     match runtime::get_key(name) {
         None => Default::default(),
         Some(value) => {
@@ -50,7 +54,7 @@ fn get_key<T: FromBytes + CLTyped + Default>(name: &str) -> T {
     }
 }
 
-fn set_key<T: ToBytes + CLTyped>(name: &str, value: T) {
+pub fn set_key<T: ToBytes + CLTyped>(name: &str, value: T) {
     match runtime::get_key(name) {
         Some(key) => {
             let key_ref = key.try_into().unwrap_or_revert();
