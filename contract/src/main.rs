@@ -36,7 +36,7 @@ use types::{
 
     account::AccountHash,
 
-    bytesrepr::{FromBytes, ToBytes},
+    bytesrepr::{FromBytes, ToBytes, Bytes},
 
     contracts::{EntryPoint, EntryPointAccess, EntryPointType, EntryPoints, NamedKeys},
 
@@ -227,9 +227,9 @@ pub extern "C" fn send() {
    
     let amount: U256 = runtime::get_named_arg("amount");
    
-    let data: Vec<u8> = runtime::get_named_arg("data");
+    let _data:Bytes = runtime::get_named_arg("data");
    
-    _send(runtime::get_caller(), to, amount, data, Vec::new(), true);
+    _send(runtime::get_caller(), to, amount, _data, Vec::new(), true);
    
 }
 
@@ -239,9 +239,9 @@ pub extern "C" fn burn() {
     
     let amount: U256 = runtime::get_named_arg("amount");
     
-    let data: Vec<u8> = runtime::get_named_arg("data");
+    let _data:Bytes = runtime::get_named_arg("data");
     
-    _burn(runtime::get_caller(), amount, data, Vec::new());
+    _burn(runtime::get_caller(), amount, _data, Vec::new());
 }
 
 
@@ -255,9 +255,9 @@ pub extern "C" fn operator_send() {
     
     let amount: U256 = runtime::get_named_arg("amount");
     
-    let data: Vec<u8> = runtime::get_named_arg("data");
+    let _data:Bytes = runtime::get_named_arg("data");
     
-    let operator_data: Vec<u8> = runtime::get_named_arg("operator_data");
+    let _operator_data:Bytes = runtime::get_named_arg("operator_data");
 
      if _is_operator_for(runtime::get_caller(), to) {
        
@@ -265,7 +265,7 @@ pub extern "C" fn operator_send() {
      
      }   
     
-    _send(runtime::get_caller(), to, amount, data, operator_data, true);
+    _send(runtime::get_caller(), to, amount, _data, _operator_data, true);
 }
 
 #[no_mangle]
@@ -275,15 +275,15 @@ pub extern "C" fn operator_burn() {
    
     let amount: U256 = runtime::get_named_arg("amount");
     
-    let data: Vec<u8> = runtime::get_named_arg("data");
+    let _data:Bytes = runtime::get_named_arg("data");
     
-    let operator_data: Vec<u8> = runtime::get_named_arg("operator_data");
+    let _operator_data:Bytes = runtime::get_named_arg("operator_data");
 
     if _is_operator_for(runtime::get_caller(), account) {
        ret("ERC777: caller is not an operator for holder"); 
     }
     
-    _burn(runtime::get_caller(), amount, data, operator_data);
+    _burn(runtime::get_caller(), amount, _data, _operator_data);
 }
 
 
@@ -303,9 +303,9 @@ pub extern "C" fn mint() {
 
     let amount: U256 = runtime::get_named_arg("amount");
 
-    let data: Vec<u8> = runtime::get_named_arg("data");
+    let _data:Bytes = runtime::get_named_arg("data");
     
-    let operator_data: Vec<u8> = runtime::get_named_arg("operator_data");
+    let _operator_data: Vec<u8> = runtime::get_named_arg("operator_data");
    
           
     _mint(token_holder, amount, data, operator_data);
