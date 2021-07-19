@@ -305,10 +305,10 @@ pub extern "C" fn mint() {
 
     let _data:Bytes = runtime::get_named_arg("data");
     
-    let _operator_data: Vec<u8> = runtime::get_named_arg("operator_data");
+    let _operator_data:Bytes = runtime::get_named_arg("operator_data");
    
           
-    _mint(token_holder, amount, data, operator_data);
+    _mint(token_holder, amount, _data, _operator_data);
        
     
 }
@@ -415,7 +415,7 @@ pub extern "C" fn call() {
 
              Parameter::new("amount", CLType::U256),
              
-             Parameter::new("data", CLType::List(Box::new(CLType::U8))),  
+             Parameter::new("_data", Bytes::cl_type()),  
         ],
         CLType::Unit,
     ));
@@ -424,7 +424,7 @@ pub extern "C" fn call() {
         "burn",
         vec![Parameter::new("amount", CLType::U256),
              
-             Parameter::new("data", CLType::List(Box::new(CLType::U8))),  
+             Parameter::new("_data", Bytes::cl_type()),  
         ],
         CLType::Unit,
     ));
@@ -437,9 +437,9 @@ pub extern "C" fn call() {
              
              Parameter::new("amount", CLType::U256), 
 
-             Parameter::new("data", CLType::List(Box::new(CLType::U8))),  
+             Parameter::new("_data", Bytes::cl_type()),  
 
-             Parameter::new("operator_data", CLType::List(Box::new(CLType::U8))),  
+             Parameter::new("_operator_data", Bytes::cl_type()),  
              
         ],
         CLType::Unit,
@@ -451,9 +451,9 @@ pub extern "C" fn call() {
 
              Parameter::new("amount", CLType::U256), 
 
-             Parameter::new("data", CLType::List(Box::new(CLType::U8))),  
+             Parameter::new("_data", Bytes::cl_type()),  
 
-             Parameter::new("operator_data", CLType::List(Box::new(CLType::U8))),  
+             Parameter::new("_operator_data", Bytes::cl_type()),  
              
         ],
         CLType::Unit,
@@ -474,9 +474,9 @@ pub extern "C" fn call() {
 
              Parameter::new("amount", CLType::U256), 
 
-             Parameter::new("data", CLType::List(Box::new(CLType::U8))),  
+             Parameter::new("_data", Bytes::cl_type()),  
 
-             Parameter::new("operator_data", CLType::List(Box::new(CLType::U8))),  
+             Parameter::new("_operator_data", Bytes::cl_type()),  
         ],
         CLType::Unit,
     ));
