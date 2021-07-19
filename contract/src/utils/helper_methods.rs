@@ -85,13 +85,13 @@ pub fn _set_allowance_key(_operator: AccountHash, _sender: AccountHash, _value: 
 }
 
 
-pub fn _call_tokens_to_send(_operator: AccountHash, _from: AccountHash, _to: AccountHash, _amount: U256, _data: Vec<u8>, _operator_data: Vec<u8>) {
+pub fn _call_tokens_to_send(_operator: AccountHash, _from: AccountHash, _to: AccountHash, _amount: U256, _data: Bytes, _operator_data: Bytes) {
 
 	// set_key(&allowance_key(&operator, &sender),U256::one());
 
 }
 
-pub fn _call_tokens_received(_operator: AccountHash, _from: AccountHash, _to: AccountHash, _amount: U256, _data: Vec<u8>, _operator_data: Vec<u8>, _require_reception_ack: bool) {
+pub fn _call_tokens_received(_operator: AccountHash, _from: AccountHash, _to: AccountHash, _amount: U256, _data: Bytes, _operator_data: Bytes, _require_reception_ack: bool) {
 
 	// set_key(&allowance_key(&_operator, &_sender),U256::one());
 
@@ -103,7 +103,7 @@ pub fn _before_token_transfer(_operator: AccountHash, _from: AccountHash, _to: A
 
 }
 
-pub fn _move(_operator: AccountHash, _from: AccountHash, _to: AccountHash, _amount: U256, _user_data: Vec<u8>, _operator_data: Vec<u8> ) {
+pub fn _move(_operator: AccountHash, _from: AccountHash, _to: AccountHash, _amount: U256, _user_data:Bytes, _operator_data: Bytes) {
 
 	// set_key(&allowance_key(&operator, &sender),U256::one());
     _before_token_transfer(_operator, _from, _to, _amount);
@@ -123,13 +123,13 @@ pub fn _move(_operator: AccountHash, _from: AccountHash, _to: AccountHash, _amou
 }
 
 
-pub fn _mint(_account: AccountHash, _amount: U256, _data: Vec<u8>, _operator_data: Vec<u8>) {
+pub fn _mint(_account: AccountHash, _amount: U256, _data:Bytes, _operator_data:Bytes) {
 
 	
      _mintcheck(_account, _amount, _data, _operator_data, true);
 }
 
-pub fn _mintcheck(_account: AccountHash, _amount: U256, _data: Vec<u8>, _operator_data: Vec<u8>, _require_reception_ack: bool) {
+pub fn _mintcheck(_account: AccountHash, _amount: U256, _data: Bytes, _operator_data: Bytes, _require_reception_ack: bool) {
 
 	// set_key(&allowance_key(&operator, &sender),U256::one());
     if  _exists_owner(_account) {
@@ -143,7 +143,7 @@ pub fn _mintcheck(_account: AccountHash, _amount: U256, _data: Vec<u8>, _operato
 
 }
 
-pub fn _send(_from: AccountHash, _to: AccountHash, _amount: U256, _data: Vec<u8>, _operator_data: Vec<u8>, _require_reception_ack: bool) {
+pub fn _send(_from: AccountHash, _to: AccountHash, _amount: U256, _data: Bytes, _operator_data: Bytes, _require_reception_ack: bool) {
           
            
             if  _exists_owner(_from) {
@@ -165,7 +165,7 @@ pub fn _send(_from: AccountHash, _to: AccountHash, _amount: U256, _data: Vec<u8>
 
 }
 
-pub fn _burn(_from: AccountHash, _amount: U256, _data: Vec<u8>, _operator_data: Vec<u8>) {
+pub fn _burn(_from: AccountHash, _amount: U256, _data: Bytes, _operator_data: Bytes) {
         
         if  _exists_owner(_from) {
 

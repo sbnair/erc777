@@ -143,11 +143,11 @@ pub extern "C" fn transfer() {
               ret("ERC777: transfer to the zero address");
     }
 
-    _call_tokens_to_send(from, from, recipient, amount, Vec::new(), Vec::new());
+    _call_tokens_to_send(from, from, recipient, amount, Bytes::new(), Bytes::new());
 
-    _move(from, from, recipient, amount, Vec::new(), Vec::new());
+    _move(from, from, recipient, amount, Bytes::new(), Bytes::new());
 
-    _call_tokens_received(from, from, recipient, amount, Vec::new(), Vec::new(), false);    
+    _call_tokens_received(from, from, recipient, amount, Bytes::new(), Bytes::new(), false);    
   
     ret(true);
     
@@ -175,9 +175,9 @@ pub extern "C" fn transfer_from() {
               ret("ERC777: transfer from the zero address");
     }
 
-    _call_tokens_to_send(spender, holder, recipient, amount, Vec::new(), Vec::new());
+    _call_tokens_to_send(spender, holder, recipient, amount, Bytes::new(), Bytes::new());
 
-    _move(spender, holder, recipient, amount, Vec::new(), Vec::new());
+    _move(spender, holder, recipient, amount, Bytes::new(), Bytes::new());
 
     let current_allowance: U256 = get_key::<U256>(&allowance_key(&holder, &spender));
 
@@ -188,7 +188,7 @@ pub extern "C" fn transfer_from() {
 
     _approve(spender, holder, current_allowance.saturating_sub(amount));
 
-     _call_tokens_received(spender, holder, recipient, amount, Vec::new(), Vec::new(), false); 
+     _call_tokens_received(spender, holder, recipient, amount, Bytes::new(), Bytes::new(), false); 
 
   
     ret(true);
@@ -229,7 +229,7 @@ pub extern "C" fn send() {
    
     let _data:Bytes = runtime::get_named_arg("data");
    
-    _send(runtime::get_caller(), to, amount, _data, Vec::new(), true);
+    _send(runtime::get_caller(), to, amount, _data, Bytes::new(), true);
    
 }
 
@@ -241,7 +241,7 @@ pub extern "C" fn burn() {
     
     let _data:Bytes = runtime::get_named_arg("data");
     
-    _burn(runtime::get_caller(), amount, _data, Vec::new());
+    _burn(runtime::get_caller(), amount, _data, Bytes::new());
 }
 
 
