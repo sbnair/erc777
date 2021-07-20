@@ -5,6 +5,10 @@ fn test_erc777_deploy() {
     let t = Token::deployed();
     assert_eq!(t.name(), token_cfg::NAME);
     assert_eq!(t.symbol(), token_cfg::SYMBOL);
+    
+    println!("Account of Ali: {}", t.ali);
+    println!("Account of Bob: {}", t.bob);
+    println!("Account of Joe: {}", t.joe);
 //    assert_eq!(t.decimals(), token_cfg::DECIMALS);
 //    assert_eq!(t.balance_of(t.ali), token_cfg::total_supply());
  //   assert_eq!(t.balance_of(t.bob), 0.into());
@@ -21,6 +25,24 @@ fn test_erc777_transfer() {
     t.transfer(t.bob, amount, Sender(t.ali));
     assert_eq!(t.balance_of(t.ali), token_cfg::total_supply() - amount);
     assert_eq!(t.balance_of(t.bob), amount);
+}
+
+#[test]
+fn approve_and_transferfrom_invalidtoken()
+{
+    let mut t = Token::deployed();
+    t.mint_token(t.ali, 1.into(), Sender(t.ali));
+    t.mint_token(t.ali, 2.into(), Sender(t.ali));
+    assert_eq!(t.balance_of(t.ali), 2.into());                  // should pass, ali now has two token
+
+    // Approving invalid token
+    t.approve(t.bob, 3.into(), Sender(t.ali));                  // token 3 doesnot exist
+//    assert_ne!(t.owner_of(3.into()), t.bob);                    // Not Equal should pass, because id 3 is a non extent token and its owner should not be bob
+
+    // TransferFrom invalid token
+    t.transfer_from(t.ali, t.joe, 3.into() ,Sender(t.bob));
+    assert_eq!(t.balance_of(t.joe), 0.into());                  // joe's balance should still be zero, because the transfer above should not have gone through
+    assert_eq!(t.balance_of(t.ali), 2.into());                  // Ali's balances should remain same
 }
 
 #[test]

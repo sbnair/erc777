@@ -2,6 +2,8 @@ use casper_engine_test_support::{Code, Hash, SessionBuilder, TestContext, TestCo
 use casper_types::{
     account::AccountHash, bytesrepr::FromBytes, runtime_args, AsymmetricType, CLTyped, PublicKey,
     RuntimeArgs, U256, U512,
+
+    bytesrepr::{Bytes},
 };
 
 pub mod token_cfg {
@@ -147,6 +149,22 @@ impl Token {
             },
         );
     }
+
+    pub fn mint_token(&mut self, token_holder: AccountHash, amount: U256, sender: Sender) {
+        self.call(
+            sender,
+            "mint",
+            runtime_args! {
+                "token_holder" => token_holder,
+                "amount" => amount,
+                "_data" => Bytes::new(),
+                "_operator_data" => Bytes::new()   
+            },
+        );
+    }
+
+
+    
 
     pub fn transfer_from(
         &mut self,
