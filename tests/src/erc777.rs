@@ -140,25 +140,30 @@ impl Token {
     }
 
     pub fn approve(&mut self, spender: AccountHash, amount: U256, sender: Sender) {
-        self.call(
+         
+       self.call(
             sender,
             "approve",
             runtime_args! {
                 "spender" => spender,
-                "amount" => amount
+                "value" => amount
             },
         );
     }
 
     pub fn mint_token(&mut self, token_holder: AccountHash, amount: U256, sender: Sender) {
-        self.call(
+       let _data:Bytes = vec![0x41u8, 0x41u8, 0x42u8].into(); 
+       
+      let _operator_data:Bytes = vec![0x59u8, 0x59u8, 0x59u8].into();      
+          
+       self.call(
             sender,
             "mint",
             runtime_args! {
                 "token_holder" => token_holder,
                 "amount" => amount,
-                "_data" => Bytes::new(),
-                "_operator_data" => Bytes::new()   
+                "data" => _data.clone(),
+                "operator_data" => _operator_data.clone(),   
             },
         );
     }
