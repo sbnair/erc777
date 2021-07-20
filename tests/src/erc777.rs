@@ -6,9 +6,9 @@ use casper_types::{
 
 pub mod token_cfg {
     use super::*;
-    pub const NAME: &str = "ERC777_TOKEN";
-    pub const SYMBOL: &str = "ERC777";
-    pub const DECIMALS: u8 = 8;
+    pub const NAME: &str = "ERC777";
+    pub const SYMBOL: &str = "ERC";
+    pub const DECIMALS: u8 = 18;
     pub fn total_supply() -> U256 {
         1_000.into()
     }
@@ -48,15 +48,15 @@ impl Token {
             .with_public_key(bob, U512::from(500_000_000_000_000_000u64))
            //  .with_account(MY_ACCOUNT, U512::from(128_000_000))
             .build();
-        let session_code = Code::from("contract.wasm");
+        let session_code = Code::from("../../target/wasm32-unknown-unknown/release/contract.wasm");
         let session_args = runtime_args! {
             "token_name" => token_cfg::NAME,
             "token_symbol" => token_cfg::SYMBOL,
-            "token_decimals" => token_cfg::DECIMALS,
-            "token_total_supply" => token_cfg::total_supply(),
-            "token_granularity" =>  token_cfg::total_granularity(),
-            "token_default_operators" => token_cfg::token_default_operators(),
-            "message" => token_cfg::token_message()
+          //  "token_decimals" => token_cfg::DECIMALS,
+          //  "token_total_supply" => token_cfg::total_supply(),
+          //  "token_granularity" =>  token_cfg::total_granularity(),
+          //  "token_default_operators" => token_cfg::token_default_operators(),
+          //  "message" => token_cfg::token_message()
         };
         let session = SessionBuilder::new(session_code, session_args)
             .with_address(alic.to_account_hash())
@@ -84,7 +84,7 @@ impl Token {
             .context
             .query(self.ali, &[token_cfg::NAME.to_string(), name.to_string()])
         {
-            Err(_) => panic!("error."),
+            Err(e) => panic!(e),
             Ok(maybe_value) => {
                 let value = maybe_value
                     .into_t()
