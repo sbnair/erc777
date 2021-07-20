@@ -321,14 +321,14 @@ pub extern "C" fn call() {
    
     let token_symbol: String = runtime::get_named_arg("token_symbol");
    
-    let token_total_supply: U256 = runtime::get_named_arg("token_total_supply");
+//    let token_total_supply: U256 = runtime::get_named_arg("token_total_supply");
    
-    let token_granularity: U256 = runtime::get_named_arg("token_granularity");
+  //  let token_granularity: U256 = runtime::get_named_arg("token_granularity");
    
-    let token_default_operators: Vec<AccountHash> = runtime::get_named_arg("token_default_operators"); 
+  //  let token_default_operators: Vec<AccountHash> = runtime::get_named_arg("token_default_operators"); 
     // Get the optional first argument supplied to the argument.
-    let value: String = runtime::get_named_arg(ARG_MESSAGE);
-    store(value);
+ //   let value: String = runtime::get_named_arg(ARG_MESSAGE);
+  //  store(value);
     let mut entry_points = EntryPoints::new(); 
     entry_points.add_entry_point(endpoint("name", vec![], CLType::Unit));
 
@@ -487,25 +487,25 @@ pub extern "C" fn call() {
     
     named_keys.insert("symbol".to_string(), storage::new_uref(token_symbol).into());
     
-    named_keys.insert(
-        "total_supply".to_string(),
-        storage::new_uref(token_total_supply).into(),
-    );
+//    named_keys.insert(
+  //      "total_supply".to_string(),
+    //    storage::new_uref(token_total_supply).into(),
+   // );
     
-    named_keys.insert(
-        "granularity".to_string(),
-        storage::new_uref(token_granularity).into(),
-    );
+   // named_keys.insert(
+     //   "granularity".to_string(),
+      //  storage::new_uref(token_granularity).into(),
+   // );
     
-    named_keys.insert(
-        "default_operators".to_string(),
-        storage::new_uref(token_default_operators).into(),
-    );
+   // named_keys.insert(
+     //   "default_operators".to_string(),
+     //   storage::new_uref(token_default_operators).into(),
+   // );
     
-    named_keys.insert(
-        balance_key(&runtime::get_caller()),
-        storage::new_uref(token_total_supply).into(),
-    );
+  //  named_keys.insert(
+    //    balance_key(&runtime::get_caller()),
+     //   storage::new_uref(token_total_supply).into(),
+  //  );
     
     let (contract_hash, _) =
         storage::new_locked_contract(entry_points, Some(named_keys), None, None);
