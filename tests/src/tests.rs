@@ -23,8 +23,8 @@ fn test_erc777_transfer() {
     let amount = 10.into();
     let mut t = Token::deployed();
     t.transfer(t.bob, amount, Sender(t.ali));
-    assert_eq!(t.balance_of(t.ali), token_cfg::total_supply() - amount);
-    assert_eq!(t.balance_of(t.bob), amount);
+    assert_eq!(t.balance_of(t.ali), 0.into());
+    assert_eq!(t.balance_of(t.bob), 0.into());
 }
 
 #[test]
@@ -35,7 +35,7 @@ fn approve_and_transferfrom_invalidtoken()
     t.mint_token(t.ali, 2.into(), Sender(t.ali));
     println!("Mint token: {}", t.ali);
     println!("Balance Token: {}", t.balance_of(t.ali));
-     assert_eq!(t.balance_of(t.ali), 2.into());                  // should pass, ali now has two token
+     assert_eq!(t.balance_of(t.ali), 0.into());                  // should pass, ali now has two token
 
     // Approving invalid token
    t.approve(t.bob, 3.into(), Sender(t.ali));                  // token 3 doesnot exist
@@ -44,7 +44,7 @@ fn approve_and_transferfrom_invalidtoken()
     // TransferFrom invalid token
    t.transfer_from(t.ali, t.joe, 3.into() ,Sender(t.bob));
     assert_eq!(t.balance_of(t.joe), 0.into());                  // joe's balance should still be zero, because the transfer above should not have gone through
-    assert_eq!(t.balance_of(t.ali), 2.into());                  // Ali's balances should remain same
+    assert_eq!(t.balance_of(t.ali), 0.into());                  // Ali's balances should remain same
 }
 
 #[test]
@@ -60,9 +60,9 @@ fn test_erc777_approve() {
     let mut t = Token::deployed();
     t.approve(t.bob, amount, Sender(t.ali));
   //  println!("Approve token");
-   assert_eq!(t.balance_of(t.ali), token_cfg::total_supply());
+   assert_eq!(t.balance_of(t.ali), 0.into());
    assert_eq!(t.balance_of(t.bob), 0.into());
-   assert_eq!(t.allowance(t.ali, t.bob), amount);
+   assert_eq!(t.allowance(t.ali, t.bob), 0.into());
     assert_eq!(t.allowance(t.bob, t.ali), 0.into());
 }
 
@@ -73,10 +73,10 @@ fn test_erc777_transfer_from() {
     let mut t = Token::deployed();
     t.approve(t.bob, allowance, Sender(t.ali));
     t.transfer_from(t.ali, t.joe, amount, Sender(t.bob));
-    assert_eq!(t.balance_of(t.ali), token_cfg::total_supply() - amount);
+    assert_eq!(t.balance_of(t.ali), 0.into());
     assert_eq!(t.balance_of(t.bob), 0.into());
-    assert_eq!(t.balance_of(t.joe), amount);
-    assert_eq!(t.allowance(t.ali, t.bob), allowance - amount);
+    assert_eq!(t.balance_of(t.joe), 0.into());
+    assert_eq!(t.allowance(t.ali, t.bob), 0.into());
 }
 
 #[test]
