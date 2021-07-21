@@ -64,6 +64,8 @@ pub fn _authorize_operator(_operator: AccountHash, _holder: AccountHash) -> &'st
     if (_operator != _holder) {
         return "ERC777: authorizing self as operator"; 
     }
+
+    return "";   
 }
 
 pub fn _allowance(_holder: AccountHash, _spender: AccountHash) {
@@ -132,7 +134,7 @@ pub fn _move(_operator: AccountHash, _from: AccountHash, _to: AccountHash, _amou
 pub fn _mint(_account: AccountHash, _amount: U256, _data:Bytes, _operator_data:Bytes) -> &'static str {
 
 	
-     _mintcheck(_account, _amount, _data, _operator_data, true);
+     _mintcheck(_account, _amount, _data, _operator_data, true)
 }
 
 pub fn _mintcheck(_account: AccountHash, _amount: U256, _data: Bytes, _operator_data: Bytes, _require_reception_ack: bool) -> &'static str {

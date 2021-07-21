@@ -22,6 +22,8 @@ use alloc::{
 
 };
 
+use std::os::raw::c_char;
+
 use core::convert::TryInto;
 
 use contract::{
@@ -131,7 +133,7 @@ pub extern "C" fn revoke_operator() {
 
 
 #[no_mangle]
-pub extern "C" fn transfer() {
+pub extern "C" fn transfer() -> *const c_char {
     let recipient: AccountHash = runtime::get_named_arg("recipient");
 
     let from: AccountHash = runtime::get_caller();
@@ -140,7 +142,7 @@ pub extern "C" fn transfer() {
 
     if  _exists_owner(recipient) {
 
-              ret("ERC777: transfer to the zero address");
+              return "ERC777: transfer to the zero address".as_ptr() as *const c_char;
     }
 
     _call_tokens_to_send(from, from, recipient, amount, Bytes::new(), Bytes::new());
@@ -149,13 +151,13 @@ pub extern "C" fn transfer() {
 
     _call_tokens_received(from, from, recipient, amount, Bytes::new(), Bytes::new(), false);    
   
-    ret(true);
+    return "".as_ptr() as *const c_char;
     
 }
 
 
 #[no_mangle]
-pub extern "C" fn transfer_from() {
+pub extern "C" fn transfer_from() -> *const c_char {
 
     let holder: AccountHash = runtime::get_named_arg("holder");
 
@@ -167,12 +169,12 @@ pub extern "C" fn transfer_from() {
 
     if  _exists_owner(recipient) {
 
-              ret("ERC777: transfer to the zero address");
+              return "ERC777: transfer to the zero address".as_ptr() as *const c_char;
     }
 
     if  _exists_owner(holder) {
 
-              ret("ERC777: transfer from the zero address");
+              return "ERC777: transfer from the zero address".as_ptr() as *const c_char;
     }
 
     _call_tokens_to_send(spender, holder, recipient, amount, Bytes::new(), Bytes::new());
@@ -183,7 +185,7 @@ pub extern "C" fn transfer_from() {
 
     if current_allowance >= amount {
 
-        ret("ERC777: transfer amount exceeds allowance");
+        return "ERC777: transfer amount exceeds allowance".as_ptr() as *const c_char;
     }
 
     _approve(spender, holder, current_allowance.saturating_sub(amount));
@@ -191,7 +193,7 @@ pub extern "C" fn transfer_from() {
      _call_tokens_received(spender, holder, recipient, amount, Bytes::new(), Bytes::new(), false); 
 
   
-    ret(true);
+    return "".as_ptr() as *const c_char;
     
 }
 
@@ -247,7 +249,7 @@ pub extern "C" fn burn() {
 
 
 #[no_mangle]
-pub extern "C" fn operator_send() {
+pub extern "C" fn operator_send() -> *const c_char {
     
    // let sender: AccountHash = runtime::get_named_arg("sender");
     
@@ -261,15 +263,17 @@ pub extern "C" fn operator_send() {
 
      if _is_operator_for(runtime::get_caller(), to) {
        
-         ret("ERC777: caller is not an operator for holder");
+         return "ERC777: caller is not an operator for holder".as_ptr() as *const c_char;
      
      }   
     
     _send(runtime::get_caller(), to, amount, _data, _operator_data, true);
+
+    return "".as_ptr() as *const c_char;
 }
 
 #[no_mangle]
-pub extern "C" fn operator_burn() {
+pub extern "C" fn operator_burn() -> *const c_char {
     
     let account: AccountHash = runtime::get_named_arg("account");
    
@@ -280,10 +284,12 @@ pub extern "C" fn operator_burn() {
     let _operator_data:Bytes = runtime::get_named_arg("operator_data");
 
     if _is_operator_for(runtime::get_caller(), account) {
-       ret("ERC777: caller is not an operator for holder"); 
+       return "ERC777: caller is not an operator for holder".as_ptr() as *const c_char; 
     }
     
     _burn(runtime::get_caller(), amount, _data, _operator_data);
+
+    return "".as_ptr() as *const c_char;
 }
 
 
