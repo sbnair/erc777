@@ -25,7 +25,7 @@ use types::{
 
 use super::mappings::*;
 
-
+// Checks whether token_id exists or not.
 pub fn _exists(_token_id: U256) -> bool {
 
 	let zero_addr: AccountHash = AccountHash::from_formatted_str("account-hash-0000000000000000000000000000000000000000000000000000000000000000").unwrap_or_default();
@@ -37,7 +37,7 @@ pub fn _exists(_token_id: U256) -> bool {
 }
 
 
-
+// Checks whether Account exists or not.
 pub fn _exists_owner(_owner_id: AccountHash) -> bool {
 
      let zero_addr: AccountHash = AccountHash::from_formatted_str("account-hash-0000000000000000000000000000000000000000000000000000000000000000").unwrap_or_default();
@@ -50,6 +50,7 @@ pub fn _exists_owner(_owner_id: AccountHash) -> bool {
 
 }
 
+// Checks the operator.
 pub fn _is_operator_for(_operator: AccountHash, _token_holder: AccountHash) -> bool {
      if _operator == _token_holder {
                 ret(true);
