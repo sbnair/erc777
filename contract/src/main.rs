@@ -99,7 +99,9 @@ pub extern "C" fn total_supply() {
 #[no_mangle]
 pub extern "C" fn balance_of() {
     let account: AccountHash = runtime::get_named_arg("account");
-    let val: U256 = get_key(&balance_key(&account));
+//    println!("Account : {}", account);
+    let val: U256 = get_key::<U256>(&balance_key(&account));
+  //  println!("Value : {}", val);
     ret(val)
 }
 

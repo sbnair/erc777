@@ -28,7 +28,7 @@ use types::{
 
 
 pub fn balance_key(account: &AccountHash) -> String {
-    format!("_balance_{}", account)
+    format!("balance_{}", account)
 }
 
 
