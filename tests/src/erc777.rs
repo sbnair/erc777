@@ -119,7 +119,7 @@ impl Token {
     }
 
     pub fn balance_of(&self, account: AccountHash) -> U256 {
-        let key = format!("balances_{}", account);
+        let key = format!("_balance_{}", account);
         self.query_contract(&key).unwrap_or_default()
     }
 
@@ -182,7 +182,7 @@ impl Token {
             sender,
             "transfer_from",
             runtime_args! {
-                "owner" => owner,
+                "holder" => owner,
                 "recipient" => recipient,
                 "amount" => amount
             },
