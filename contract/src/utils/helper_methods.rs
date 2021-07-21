@@ -28,7 +28,7 @@ use super::mappings::*;
 
 pub fn _exists(_token_id: U256) -> bool {
 
-	let zero_addr: AccountHash = AccountHash::from_formatted_str("account.hash.000000000000000000000000000000000000000000").unwrap_or_default();
+	let zero_addr: AccountHash = AccountHash::from_formatted_str("account-hash-0000000000000000000000000000000000000000000000000000000000000000").unwrap_or_default();
 
 	let owner: AccountHash = get_key(&owner_key(_token_id));
 
@@ -40,7 +40,7 @@ pub fn _exists(_token_id: U256) -> bool {
 
 pub fn _exists_owner(_owner_id: AccountHash) -> bool {
 
-     let zero_addr: AccountHash = AccountHash::from_formatted_str("account.hash.000000000000000000000000000000000000000000").unwrap_or_default();
+     let zero_addr: AccountHash = AccountHash::from_formatted_str("account-hash-0000000000000000000000000000000000000000000000000000000000000000").unwrap_or_default();
 
      let owner: AccountHash = _owner_id;
 
@@ -84,19 +84,21 @@ pub fn _set_allowance_key(_operator: AccountHash, _sender: AccountHash, _value: 
 
 }
 
-
+#[allow(unused)]
 pub fn _call_tokens_to_send(_operator: AccountHash, _from: AccountHash, _to: AccountHash, _amount: U256, _data: Bytes, _operator_data: Bytes) {
 
 	// set_key(&allowance_key(&operator, &sender),U256::one());
 
 }
 
+#[allow(unused)]
 pub fn _call_tokens_received(_operator: AccountHash, _from: AccountHash, _to: AccountHash, _amount: U256, _data: Bytes, _operator_data: Bytes, _require_reception_ack: bool) {
 
 	// set_key(&allowance_key(&_operator, &_sender),U256::one());
 
 }
 
+#[allow(unused)]
 pub fn _before_token_transfer(_operator: AccountHash, _from: AccountHash, _to: AccountHash, _amount: U256) {
 
     // set_key(&allowance_key(&operator, &sender),U256::one());
