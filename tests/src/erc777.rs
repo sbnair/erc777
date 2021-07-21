@@ -86,7 +86,7 @@ impl Token {
             .context
             .query(self.ali, &[token_cfg::NAME.to_string(), name.to_string()])
         {
-            Err(e) => panic!(e),
+            Err(_) => None,
             Ok(maybe_value) => {
                 let value = maybe_value
                     .into_t()
@@ -119,8 +119,9 @@ impl Token {
     }
 
     pub fn balance_of(&self, account: AccountHash) -> U256 {
-        let key = format!("_balance_{}", account);
-        self.query_contract(&key).unwrap_or_default()
+        let key = format!("balance_{}", account);
+       println!("{}",key); 
+       self.query_contract(&key).unwrap_or_default()
     }
 
     pub fn allowance(&self, owner: AccountHash, spender: AccountHash) -> U256 {
