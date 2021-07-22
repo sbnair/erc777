@@ -28,12 +28,12 @@ use types::{
 
 
 pub fn balance_key(account: &AccountHash) -> String {
-    format!("balance_{}", account)
+    format!("_balance_{}", account)
 }
 
 
 pub fn allowance_key(owner: &AccountHash, sender: &AccountHash) -> String {
-    format!("allowances_{}_{}", owner, sender)
+    format!("_allowances_{}_{}", owner, sender)
 }
 
 pub fn owner_key(token_id: U256) -> String {

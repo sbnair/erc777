@@ -1,17 +1,10 @@
+/*
 #![cfg_attr(
     not(target_arch = "wasm32"),
     crate_type = "target arch should be wasm32"
 )]
+*/
 #![no_main]
-#![allow(unused_imports)]
-#![allow(unused_parens)]
-#![allow(non_snake_case)]
-
-//  use casper_contract::{
-//    contract_api::{runtime, storage},
-// };
-// use casper_types::{Key, URef};
-
 extern crate alloc;
 
 use alloc::{
@@ -46,12 +39,7 @@ use types::{
 
 };
 
-// mod utils;
-
-pub mod utils {
-    pub mod helper_methods;
-    pub mod mappings;
-}
+ mod utils;
 
 use utils::helper_methods::*;
 
@@ -97,11 +85,11 @@ pub extern "C" fn total_supply() {
 }
 
 #[no_mangle]
-pub extern "C" fn balance_of() {
+pub extern "C" fn balance_supply() {
     let account: AccountHash = runtime::get_named_arg("account");
-//    println!("Account : {}", account);
-    let val: U256 = get_key::<U256>(&balance_key(&account));
-  //  println!("Value : {}", val);
+  //  set_key(&"_balance_3e582ebb478a2bdd1aa58bd99503b20cb7e31ff5a1220cf8ae4da2dbafae0e8d",U256::from(1)); 
+   // let val: U256 = get_key("_balance_3e582ebb478a2bdd1aa58bd99503b20cb7e31ff5a1220cf8ae4da2dbafae0e8d");
+     let val: U256 = get_key::<U256>(&balance_key(&account));
     ret(val)
 }
 
@@ -206,7 +194,7 @@ pub extern "C" fn is_operator_for() {
     
     let token_holder: AccountHash = runtime::get_named_arg("token_holder"); 
     
-    _is_operator_for(operator, token_holder);
+    ret(_is_operator_for(operator, token_holder));
   
 }
 
@@ -329,7 +317,7 @@ pub extern "C" fn call() {
    
     let token_symbol: String = runtime::get_named_arg("token_symbol");
    
-//    let token_total_supply: U256 = runtime::get_named_arg("token_total_supply");
+    let token_total_supply: U256 = runtime::get_named_arg("token_total_supply");
    
   //  let token_granularity: U256 = runtime::get_named_arg("token_granularity");
    
@@ -348,10 +336,19 @@ pub extern "C" fn call() {
     
     entry_points.add_entry_point(endpoint("default_operators", vec![], AccountHash::cl_type()));
     
-    entry_points.add_entry_point(endpoint(
-        "balance_of",
+
+   // entry_points.add_entry_point(endpoint(
+     //   "balance_of",
+     //   vec![Parameter::new("account", AccountHash::cl_type())],
+     //   CLType::Unit,
+   // ));
+
+     entry_points.add_entry_point(EntryPoint::new(
+        String::from("balance_supply"),
         vec![Parameter::new("account", AccountHash::cl_type())],
         CLType::Unit,
+        EntryPointAccess::Public,
+        EntryPointType::Contract,
     ));
 
      entry_points.add_entry_point(endpoint(
@@ -396,11 +393,7 @@ pub extern "C" fn call() {
         vec![Parameter::new("holder", AccountHash::cl_type()),
 
              Parameter::new("recipient", AccountHash::cl_type()),
-             
-             Parameter::new("sender", AccountHash::cl_type()),  
-             
-             Parameter::new("amount", CLType::U256),
-
+            
         ],
         CLType::Unit,
     ));
@@ -495,10 +488,10 @@ pub extern "C" fn call() {
     
     named_keys.insert("symbol".to_string(), storage::new_uref(token_symbol).into());
     
-//    named_keys.insert(
-  //      "total_supply".to_string(),
-    //    storage::new_uref(token_total_supply).into(),
-   // );
+    named_keys.insert(
+        "total_supply".to_string(),
+       storage::new_uref(token_total_supply).into(),
+    );
     
    // named_keys.insert(
      //   "granularity".to_string(),
@@ -510,10 +503,10 @@ pub extern "C" fn call() {
      //   storage::new_uref(token_default_operators).into(),
    // );
     
-  //  named_keys.insert(
-    //    balance_key(&runtime::get_caller()),
-     //   storage::new_uref(token_total_supply).into(),
-  //  );
+    named_keys.insert(
+       balance_key(&runtime::get_caller()),
+       storage::new_uref(token_total_supply).into(),
+    );
     
     let (contract_hash, _) =
         storage::new_locked_contract(entry_points, Some(named_keys), None, None);
