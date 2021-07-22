@@ -138,7 +138,7 @@ pub extern "C" fn transfer() -> *const c_char {
 
     _call_tokens_received(from, from, recipient, amount, Bytes::new(), Bytes::new(), false);    
   
-    return "".as_ptr() as *const c_char;
+    return "true".as_ptr() as *const c_char;
     
 }
 
@@ -180,7 +180,7 @@ pub extern "C" fn transfer_from() -> *const c_char {
      _call_tokens_received(spender, holder, recipient, amount, Bytes::new(), Bytes::new(), false); 
 
   
-    return "".as_ptr() as *const c_char;
+    return "true".as_ptr() as *const c_char;
     
 }
 
@@ -256,7 +256,7 @@ pub extern "C" fn operator_send() -> *const c_char {
     
     _send(runtime::get_caller(), to, amount, _data, _operator_data, true);
 
-    return "".as_ptr() as *const c_char;
+    return "true".as_ptr() as *const c_char;
 }
 
 #[no_mangle]
@@ -276,7 +276,7 @@ pub extern "C" fn operator_burn() -> *const c_char {
     
     _burn(runtime::get_caller(), amount, _data, _operator_data);
 
-    return "".as_ptr() as *const c_char;
+    return "true".as_ptr() as *const c_char;
 }
 
 
