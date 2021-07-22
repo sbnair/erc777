@@ -12,9 +12,5 @@ casper-contract = "1.2.0"
 casper-types = "1.2.0"
 casper-engine-test-support = "1.2.0"
 
-[[bin]]
-name = "integration-tests"
-path = "src/integration_tests.rs"
-
 [features]
 default = ["casper-contract/std", "casper-types/std", "casper-engine-test-support/test-support", "casper-contract/test-support"]

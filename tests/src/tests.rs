@@ -99,3 +99,19 @@ fn test_erc777_transfer_from_too_much() {
     let mut t = Token::deployed();
     t.transfer_from(t.ali, t.joe, amount, Sender(t.bob));
 }
+
+#[test]
+fn test_erc777_authorize_operator() {
+    let mut t = Token::deployed();
+    t.authorize_operator(t.ali, Sender(t.bob));
+    assert_eq!(t.is_operator_for(t.ali,t.ali), false);
+    assert_eq!(t.is_operator_for(t.ali,t.bob),false); 
+}
+
+#[test]
+fn test_erc777_revoke_operator() {
+    let mut t = Token::deployed();
+    t.revoke_operator(t.ali, Sender(t.bob));
+    assert_eq!(t.is_operator_for(t.ali,t.ali), false);
+    assert_eq!(t.is_operator_for(t.ali,t.bob),false);
+}

@@ -146,6 +146,27 @@ impl Token {
         );
     }
 
+    pub fn authorize_operator(&mut self, operator: AccountHash, sender: Sender) {
+        self.call(
+            sender,
+            "authorize_operator",
+            runtime_args! {
+                "operator" => operator
+            },
+        );
+    }
+
+    pub fn revoke_operator(&mut self, operator: AccountHash, sender: Sender) {
+        self.call(
+            sender,
+            "revoke_operator",
+            runtime_args! {
+                "operator" => operator 
+            },
+        );
+    }
+   
+
     pub fn is_operator_for(&mut self, holder: AccountHash, recipient: AccountHash) -> bool {
         let key = format!("_is_operator_for_{}_{}", holder, recipient);
         self.query_contract(&key).unwrap_or_default()
