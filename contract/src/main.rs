@@ -85,11 +85,9 @@ pub extern "C" fn total_supply() {
 }
 
 #[no_mangle]
-pub extern "C" fn balance_supply() {
+pub extern "C" fn balance_of() {
     let account: AccountHash = runtime::get_named_arg("account");
-  //  set_key(&"_balance_3e582ebb478a2bdd1aa58bd99503b20cb7e31ff5a1220cf8ae4da2dbafae0e8d",U256::from(1)); 
-   // let val: U256 = get_key("_balance_3e582ebb478a2bdd1aa58bd99503b20cb7e31ff5a1220cf8ae4da2dbafae0e8d");
-     let val: U256 = get_key::<U256>(&balance_key(&account));
+    let val: U256 = get_key::<U256>(&balance_key(&account));
     ret(val)
 }
 
@@ -109,7 +107,6 @@ pub extern "C" fn default_operators() {
 pub extern "C" fn authorize_operator() {
     let operator: AccountHash = runtime::get_named_arg("operator");
     
-   //  set_key(&allowance_key(&operator, &runtime::get_caller()),U256::one());
     _authorize_operator(operator, runtime::get_caller());    
 }
 
@@ -337,20 +334,20 @@ pub extern "C" fn call() {
     entry_points.add_entry_point(endpoint("default_operators", vec![], AccountHash::cl_type()));
     
 
-   // entry_points.add_entry_point(endpoint(
-     //   "balance_of",
-     //   vec![Parameter::new("account", AccountHash::cl_type())],
-     //   CLType::Unit,
-   // ));
-
-     entry_points.add_entry_point(EntryPoint::new(
-        String::from("balance_supply"),
-        vec![Parameter::new("account", AccountHash::cl_type())],
+    entry_points.add_entry_point(endpoint(
+        "balance_of",
+       vec![Parameter::new("account", AccountHash::cl_type())],
         CLType::Unit,
-        EntryPointAccess::Public,
-        EntryPointType::Contract,
     ));
 
+   //  entry_points.add_entry_point(EntryPoint::new(
+     //   String::from("balance_supply"),
+    //    vec![Parameter::new("account", AccountHash::cl_type())],
+    //    CLType::Unit,
+    //    EntryPointAccess::Public,
+    //    EntryPointType::Contract,
+   // ));
+    
      entry_points.add_entry_point(endpoint(
         "authorize_operator",
         vec![Parameter::new("operator", AccountHash::cl_type())],
