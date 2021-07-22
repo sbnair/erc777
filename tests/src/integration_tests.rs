@@ -24,7 +24,7 @@ mod tests {
         // The test framework checks for compiled Wasm files in '<current working dir>/wasm'.  Paths
         // relative to the current working dir (e.g. 'wasm/contract.wasm') can also be used, as can
         // absolute paths.
-        let session_code = Code::from("contract.wasm");
+        let session_code = Code::from("../../target/wasm32-unknown-unknown/release/contract.wasm");
         let session_args = runtime_args! {
             ARG_MESSAGE => VALUE,
         };

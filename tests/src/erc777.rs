@@ -12,10 +12,10 @@ pub mod token_cfg {
     pub const SYMBOL: &str = "ERC";
     pub const DECIMALS: u8 = 18;
     pub fn total_supply() -> U256 {
-        1_000.into()
+        5.into()
     }
     pub fn total_granularity() -> U256 {
-        1_000.into()
+        1.into()
     }
     pub fn token_default_operators() -> Vec<AccountHash> {
       //  Vec(AccountHash::new([42; 32])).into()
@@ -55,7 +55,7 @@ impl Token {
             "token_name" => token_cfg::NAME,
             "token_symbol" => token_cfg::SYMBOL,
           //  "token_decimals" => token_cfg::DECIMALS,
-          //  "token_total_supply" => token_cfg::total_supply(),
+            "token_total_supply" => token_cfg::total_supply(),
           //  "token_granularity" =>  token_cfg::total_granularity(),
           //  "token_default_operators" => token_cfg::token_default_operators(),
           //  "message" => token_cfg::token_message()
@@ -88,9 +88,11 @@ impl Token {
         {
             Err(_) => None,
             Ok(maybe_value) => {
+            
                 let value = maybe_value
                     .into_t()
                     .unwrap_or_else(|_| panic!("{} is not expected type.", name));
+               // println!("{}",value.to_string());
                 Some(value)
             }
         }
@@ -118,14 +120,18 @@ impl Token {
         self.query_contract("decimals").unwrap()
     }
 
+    pub fn total_supply(&self) -> U256 {
+        self.query_contract("total_supply").unwrap()
+    }
+
     pub fn balance_of(&self, account: AccountHash) -> U256 {
-        let key = format!("balance_{}", account);
+        let key = format!("_balance_{}", account);
        println!("{}",key); 
        self.query_contract(&key).unwrap_or_default()
     }
 
     pub fn allowance(&self, owner: AccountHash, spender: AccountHash) -> U256 {
-        let key = format!("allowances_{}_{}", owner, spender);
+        let key = format!("_allowance_{}_{}", owner, spender);
         self.query_contract(&key).unwrap_or_default()
     }
 
@@ -139,6 +145,12 @@ impl Token {
             },
         );
     }
+
+    pub fn is_operator_for(&mut self, holder: AccountHash, recipient: AccountHash) -> bool {
+        let key = format!("_is_operator_for_{}_{}", holder, recipient);
+        self.query_contract(&key).unwrap_or_default()
+    }
+
 
     pub fn approve(&mut self, spender: AccountHash, amount: U256, sender: Sender) {
          
