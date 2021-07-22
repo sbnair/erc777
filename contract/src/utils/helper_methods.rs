@@ -34,8 +34,7 @@ pub fn _exists(_token_id: U256) -> bool {
 
 	let owner: AccountHash = get_key(&owner_key(_token_id));
 
-	owner != zero_addr
-  
+	owner != zero_addr 
 }
 
 
@@ -47,9 +46,6 @@ pub fn _exists_owner(_owner_id: AccountHash) -> bool {
      let owner: AccountHash = _owner_id;
 
      owner != zero_addr
-   
-
-
 }
 
 // Checks the operator.
@@ -69,7 +65,7 @@ pub fn _authorize_operator(_operator: AccountHash, _holder: AccountHash) -> *con
         return "ERC777: authorizing self as operator".as_ptr() as *const c_char;
     }
 
-    return "".as_ptr() as *const c_char;   
+    return "true".as_ptr() as *const c_char;   
 }
 
 pub fn _allowance(_holder: AccountHash, _spender: AccountHash) {
@@ -84,7 +80,7 @@ pub fn _revoke_operator(_operator: AccountHash, _holder: AccountHash) -> *const 
         return "ERC777: revoking self as operator".as_ptr() as *const c_char;  
     }
 
-    return "".as_ptr() as *const c_char;
+    return "true".as_ptr() as *const c_char;
 }
 
 pub fn _set_allowance_key(_operator: AccountHash, _sender: AccountHash, _value: U256) {
@@ -130,7 +126,7 @@ pub fn _move(_operator: AccountHash, _from: AccountHash, _to: AccountHash, _amou
 
      set_key(&balance_key(&_to),get_key::<U256>(&balance_key(&_to)).saturating_add(_amount));
      
-     return "".as_ptr() as *const c_char;
+     return "true".as_ptr() as *const c_char;
 
 }
 
@@ -153,7 +149,7 @@ pub fn _mintcheck(_account: AccountHash, _amount: U256, _data: Bytes, _operator_
         
     set_key(&balance_key(&_account),get_key::<U256>(&balance_key(&_account)).saturating_add(_amount));
 
-    return "".as_ptr() as *const c_char;
+    return "true".as_ptr() as *const c_char;
 }
 
 pub fn _send(_from: AccountHash, _to: AccountHash, _amount: U256, _data: Bytes, _operator_data: Bytes, _require_reception_ack: bool) -> *const c_char {
@@ -170,7 +166,7 @@ pub fn _send(_from: AccountHash, _to: AccountHash, _amount: U256, _data: Bytes, 
             }
 
 
-            return "".as_ptr() as *const c_char;
+            return "true".as_ptr() as *const c_char;
             // set_key(&balance_key(&from_value),get_key::<U256>(&balance_key(&from_value)).saturating_sub(amount_value)); 
          
             // set_key(&balance_key(to), get_key::<U256>(&balance_key(&to)).saturating_sub(amount_value));
@@ -185,7 +181,7 @@ pub fn _burn(_from: AccountHash, _amount: U256, _data: Bytes, _operator_data: By
     	      return "ERC777: burn from the zero address".as_ptr() as *const c_char;
         }          
 
-        return "".as_ptr() as *const c_char;
+        return "true".as_ptr() as *const c_char;
 
 }
 
@@ -204,6 +200,6 @@ pub fn _approve(_holder: AccountHash, _spender: AccountHash, _value: U256) -> *c
 
        _set_allowance_key(_holder, _spender, _value);     
 
-       return "".as_ptr() as *const c_char;    
+       return "true".as_ptr() as *const c_char;    
 
 }
