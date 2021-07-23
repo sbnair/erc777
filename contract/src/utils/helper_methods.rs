@@ -13,16 +13,6 @@ use std::os::raw::c_char;
 
 use super::mappings::*;
 
-// Checks whether token_id exists or not.
-pub fn _exists(_token_id: U256) -> bool {
-
-	let zero_addr: AccountHash = AccountHash::from_formatted_str("account-hash-0000000000000000000000000000000000000000000000000000000000000000").unwrap_or_default();
-
-	let owner: AccountHash = get_key(&owner_key(_token_id));
-
-	owner != zero_addr 
-}
-
 
 // Checks whether Account exists or not.
 pub fn _exists_owner(_owner_id: AccountHash) -> bool {
@@ -37,11 +27,11 @@ pub fn _exists_owner(_owner_id: AccountHash) -> bool {
 // Checks the operator.
 pub fn _is_operator_for(_operator: AccountHash, _token_holder: AccountHash) -> bool {
      
-     let mut val:bool = true; 
+     let mut val: bool = true; 
      if _operator == _token_holder {
              val = true;
      }
-     val = get_key::<U256>(&allowance_key(&_operator, &_token_holder)) == U256::one();
+     val = (get_key::<U256>(&allowance_key(&_operator, &_token_holder)) == U256::one());
      ret (val)
 }
 
