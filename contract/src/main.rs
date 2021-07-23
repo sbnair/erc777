@@ -9,33 +9,26 @@ extern crate alloc;
 
 use alloc::{
 
-    collections::{BTreeMap, BTreeSet},
-
-    string::String,
+  string::String,
 
 };
 
 use std::os::raw::c_char;
 
-use core::convert::TryInto;
-
 use contract::{
 
     contract_api::{runtime, storage},
-
-    unwrap_or_revert::UnwrapOrRevert,
-
 };
 
 use types::{
 
     account::AccountHash,
 
-    bytesrepr::{FromBytes, ToBytes, Bytes},
+    bytesrepr::{Bytes},
 
     contracts::{EntryPoint, EntryPointAccess, EntryPointType, EntryPoints, NamedKeys},
 
-    runtime_args, CLType, CLTyped, CLValue, Group, Parameter, RuntimeArgs, URef, U256, Key
+    CLType, CLTyped, Parameter, URef, U256, Key
 
 };
 
