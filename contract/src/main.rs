@@ -199,7 +199,7 @@ pub extern "C" fn is_operator_for() {
     
     let token_holder: AccountHash = runtime::get_named_arg("token_holder"); 
     
-    ret(_is_operator_for(operator, token_holder));
+    _is_operator_for(operator, token_holder);
   
 }
 
