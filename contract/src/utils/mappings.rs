@@ -36,10 +36,6 @@ pub fn allowance_key(owner: &AccountHash, sender: &AccountHash) -> String {
     format!("_allowances_{}_{}", owner, sender)
 }
 
-pub fn owner_key(token_id: U256) -> String {
-    format!("_owner_{}",token_id)
-}
-
 pub fn ret<T: CLTyped + ToBytes>(value: T) {
     runtime::ret(CLValue::from_t(value).unwrap_or_revert())
 }
