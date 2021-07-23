@@ -1,25 +1,11 @@
 
-use alloc::{
-
-    string::String,
-
-};
-
-use contract::{
-
-    contract_api::{runtime},
-
-    unwrap_or_revert::UnwrapOrRevert,
-
-};
-
 use types::{
 
     account::AccountHash,
 
-    bytesrepr::{Bytes, ToBytes},
+    bytesrepr::{Bytes},
 
-    CLTyped, U256, CLValue
+    U256
 
 };
 
@@ -56,7 +42,7 @@ pub fn _is_operator_for(_operator: AccountHash, _token_holder: AccountHash) -> b
              val = true;
      }
      val = get_key::<U256>(&allowance_key(&_operator, &_token_holder)) == U256::one();
-     val
+     ret (val)
 }
 
 pub fn _authorize_operator(_operator: AccountHash, _holder: AccountHash) -> *const c_char {
