@@ -31,7 +31,8 @@ pub fn _is_operator_for(_operator: AccountHash, _token_holder: AccountHash) -> b
      if _operator == _token_holder {
              val = true;
      }
-     val = (get_key::<U256>(&allowance_key(&_operator, &_token_holder)) == U256::one());
+     if get_key::<U256>(&allowance_key(&_operator, &_token_holder)) == U256::one() 
+	val = true; 
      ret (val)
 }
 
