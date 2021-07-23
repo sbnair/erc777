@@ -28,12 +28,12 @@ pub fn _exists_owner(_owner_id: AccountHash) -> bool {
 pub fn _is_operator_for(_operator: AccountHash, _token_holder: AccountHash) -> bool {
       
      if _operator == _token_holder {
-             ret(true);
+          return true;
      }
      if get_key::<U256>(&allowance_key(&_operator, &_token_holder)) == U256::one() {
-	ret(true);
+           return true;
      } else {
-          ret(false); 
+            return false; 
      }
 }
 
