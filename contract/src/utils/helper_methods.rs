@@ -125,6 +125,7 @@ pub fn _mintcheck(_account: AccountHash, _amount: U256, _data: Bytes, _operator_
 
     set_key(&"total_supply",get_key::<U256>(&"total_supply").saturating_add(_amount));   
     println!("balance : {}",&balance_key(&_account));        
+
     set_key(&balance_key(&_account),get_key::<U256>(&balance_key(&_account)).saturating_add(_amount));
 
     return "true".as_ptr() as *const c_char;
