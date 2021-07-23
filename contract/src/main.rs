@@ -28,7 +28,7 @@ use types::{
 
     contracts::{EntryPoint, EntryPointAccess, EntryPointType, EntryPoints, NamedKeys},
 
-    CLType, CLTyped, Parameter, URef, U256, Key
+    CLType, CLTyped, Parameter, U256
 
 };
 
