@@ -33,7 +33,7 @@ pub fn balance_key(account: &AccountHash) -> String {
 
 
 pub fn allowance_key(owner: &AccountHash, sender: &AccountHash) -> String {
-    format!("_allowances_{}_{}", owner, sender)
+    format!("_allowance_{}_{}", owner, sender)
 }
 
 pub fn ret<T: CLTyped + ToBytes>(value: T) {
