@@ -20,7 +20,7 @@ use types::{
     
     bytesrepr::{ToBytes, FromBytes},
     
-    CLTyped, U256, CLValue
+    CLTyped, CLValue
 
 };
 
