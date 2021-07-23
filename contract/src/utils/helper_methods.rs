@@ -26,15 +26,14 @@ pub fn _exists_owner(_owner_id: AccountHash) -> bool {
 
 // Checks the operator.
 pub fn _is_operator_for(_operator: AccountHash, _token_holder: AccountHash) -> bool {
-     
-     let mut val: bool = true; 
+      
      if _operator == _token_holder {
-             val = true;
+             ret(true);
      }
      if get_key::<U256>(&allowance_key(&_operator, &_token_holder)) == U256::one() {
-	val = true; 
+	ret(true);
      }
-     ret (val)
+     ret(false); 
 }
 
 pub fn _authorize_operator(_operator: AccountHash, _holder: AccountHash) -> *const c_char {
