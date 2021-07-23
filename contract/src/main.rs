@@ -39,19 +39,19 @@ use utils::helper_methods::*;
 use utils::mappings::*;
 
 
-const KEY: &str = "special_value";
-const ARG_MESSAGE: &str = "message";
+// const KEY: &str = "special_value";
+// const ARG_MESSAGE: &str = "message";
 
-fn store(value: String) {
+// fn store(value: String) {
     // Store `value` under a new unforgeable reference.
-    let value_ref: URef = storage::new_uref(value);
+   // let value_ref: URef = storage::new_uref(value);
 
     // Wrap the unforgeable reference in a value of type `Key`.
-    let value_key: Key = value_ref.into();
+   // let value_key: Key = value_ref.into();
 
     // Store this key under the name "special_value" in context-local storage.
-    runtime::put_key(KEY, value_key);
-}
+   // runtime::put_key(KEY, value_key);
+// }
 
 #[no_mangle]
 // Gets the name of token
