@@ -197,10 +197,20 @@ pub extern "C" fn is_operator_for() {
 
     let operator: AccountHash = runtime::get_named_arg("operator");
     
-    let token_holder: AccountHash = runtime::get_named_arg("token_holder"); 
-    
-    _is_operator_for(operator, token_holder);
-  
+    let token_holder: AccountHash = runtime::get_named_arg("token_holder");
+ 
+   // let sender: AccountHash = runtime::get_named_arg("sender");   
+    // ret (_is_operator_for(operator, token_holder));
+
+   // let resp: bool = _is_operator_for(operator, token_holder);
+   
+ //   if resp {   
+   //    set_key::<U256>(&logging_key(),1.into());
+   // } else {
+     //  set_key::<U256>(&logging_key(),2.into());  
+  //  }
+    let val: bool = get_key::<bool>(&is_operator_for_key(&operator, &token_holder));
+    ret(val)
 }
 
 #[no_mangle]
@@ -328,10 +338,9 @@ pub extern "C" fn mint() {
     let _data:Bytes = runtime::get_named_arg("data");
     
     let _operator_data:Bytes = runtime::get_named_arg("operator_data");
-   
-          
+             
     _mint(token_holder, amount, _data, _operator_data);
-       
+//    set_key::<U256>(&logging_key(),amount);       
     
 }
 
@@ -345,6 +354,8 @@ pub extern "C" fn call() {
    
     let token_total_supply: U256 = runtime::get_named_arg("token_total_supply");
    
+    let token_operator: bool = true;
+
   //  let token_granularity: U256 = runtime::get_named_arg("token_granularity");
    
   //  let token_default_operators: Vec<AccountHash> = runtime::get_named_arg("token_default_operators"); 
@@ -410,8 +421,8 @@ pub extern "C" fn call() {
         "is_operator_for",
         vec![Parameter::new("holder", AccountHash::cl_type()),
 
-             Parameter::new("recipient", AccountHash::cl_type()),
-            
+             Parameter::new("token_holder", AccountHash::cl_type()),
+               
         ],
         CLType::Unit,
     ));
@@ -520,11 +531,26 @@ pub extern "C" fn call() {
      //   "default_operators".to_string(),
      //   storage::new_uref(token_default_operators).into(),
    // );
+
+    named_keys.insert(
+       logging_key(),
+       storage::new_uref(token_total_supply).into(),
+    );
     
     named_keys.insert(
        balance_key(&runtime::get_caller()),
        storage::new_uref(token_total_supply).into(),
     );
+
+    named_keys.insert(
+       is_operator_for_key(&runtime::get_caller(),&runtime::get_caller()),
+       storage::new_uref(token_operator).into(),
+    );
+
+  //  named_keys.insert(
+    //   logging_key(),
+    //   false,
+   // ); 
     
     let (contract_hash, _) =
         storage::new_locked_contract(entry_points, Some(named_keys), None, None);

@@ -31,13 +31,10 @@ pub fn balance_key(account: &AccountHash) -> String {
     format!("_balance_{}", account)
 }
 
-pub fn logging_key() -> String {
-    format!("_logging_{}", 1)
+pub fn balance_key(account: &AccountHash) -> String {
+    format!("_balance_{}", account)
 }
 
-pub fn is_operator_for_key(holder: &AccountHash, token_holder: &AccountHash) -> String {
-    format!("_is_operator_for_{}_{}", holder, token_holder)
-}
 
 pub fn allowance_key(owner: &AccountHash, sender: &AccountHash) -> String {
     format!("_allowance_{}_{}", owner, sender)

@@ -21,28 +21,29 @@ pub fn _exists_owner(_owner_id: AccountHash) -> bool {
 
      let owner: AccountHash = _owner_id;
 
-     owner != zero_addr
+     owner == zero_addr
 }
 
 // Checks the operator.
 pub fn _is_operator_for(_operator: AccountHash, _token_holder: AccountHash) -> bool {
       
-     if _operator == _token_holder {
-          return true;
-     }
-     if get_key::<U256>(&allowance_key(&_operator, &_token_holder)) == U256::one() {
-           return true;
-     } else {
-            return false; 
-     }
+    _operator == _token_holder
 }
 
 pub fn _authorize_operator(_operator: AccountHash, _holder: AccountHash) -> *const c_char {
    
-    if _operator != _holder {
-        return "ERC777: authorizing self as operator".as_ptr() as *const c_char;
-    }
+    if ! (_operator == _holder) {
 
+           set_key::<U256>(&logging_key(),4.into());
+         
+           set_key::<bool>(&is_operator_for_key(&_operator, &_operator), false);
+         
+           return "ERC777: authorizing self as operator".as_ptr() as *const c_char;
+       
+    }
+    set_key::<U256>(&logging_key(),6.into());
+    set_key::<bool>(&is_operator_for_key(&_operator, &_holder), true);
+    
     return "true".as_ptr() as *const c_char;   
 }
 
@@ -54,9 +55,18 @@ pub fn _allowance(_holder: AccountHash, _spender: AccountHash) {
 
 pub fn _revoke_operator(_operator: AccountHash, _holder: AccountHash) -> *const c_char {
      
-    if _operator != _holder {
-        return "ERC777: revoking self as operator".as_ptr() as *const c_char;  
+    if ! (_operator == _holder) {
+
+          set_key::<U256>(&logging_key(),8.into());
+          
+          set_key::<bool>(&is_operator_for_key(&_operator, &_operator), true); 
+
+          return "ERC777: revoking self as operator".as_ptr() as *const c_char;  
     }
+
+    set_key::<U256>(&logging_key(),9.into());
+
+    set_key::<bool>(&is_operator_for_key(&_operator, &_holder), false);
 
     return "true".as_ptr() as *const c_char;
 }
@@ -124,9 +134,9 @@ pub fn _mintcheck(_account: AccountHash, _amount: U256, _data: Bytes, _operator_
     }
 
     set_key(&"total_supply",get_key::<U256>(&"total_supply").saturating_add(_amount));   
-    println!("balance : {}",&balance_key(&_account));        
-
-    set_key(&balance_key(&_account),get_key::<U256>(&balance_key(&_account)).saturating_add(_amount));
+   // println!("balance : {}",&balance_key(&_account));        
+   //  set_key::<U256>(&logging_key(), get_key::<U256>(&balance_key(&_account)).saturating_add(_amount)); 
+    set_key::<U256>(&balance_key(&_account),get_key::<U256>(&balance_key(&_account)).saturating_add(_amount));
 
     return "true".as_ptr() as *const c_char;
 }
