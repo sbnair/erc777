@@ -130,6 +130,12 @@ impl Token {
        self.query_contract(&key).unwrap_or_default()
     }
 
+    pub fn logging(&self) -> U256 {
+        let key = format!("_logging_{}", 1);
+       println!("{}",key);
+       self.query_contract(&key).unwrap_or_default()
+    }
+
     pub fn allowance(&self, owner: AccountHash, spender: AccountHash) -> U256 {
         let key = format!("_allowance_{}_{}", owner, spender);
         self.query_contract(&key).unwrap_or_default()
@@ -167,9 +173,18 @@ impl Token {
     }
    
 
-    pub fn is_operator_for(&mut self, holder: AccountHash, recipient: AccountHash) -> bool {
-        let key = format!("_is_operator_for_{}_{}", holder, recipient);
+    pub fn is_operator_for(&mut self, holder: AccountHash, token_holder: AccountHash) -> bool {
+        let key = format!("_is_operator_for_{}_{}", &holder, &token_holder);
         self.query_contract(&key).unwrap_or_default()
+      //    self.call(
+        //    Sender(holder),
+          //  "is_operator_for",
+         //   runtime_args! {
+           //     "holder" => holder,
+             //   "token_holder" => token_holder
+          //  },
+       // );
+      //  true   
     }
 
 
