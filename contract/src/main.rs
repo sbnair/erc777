@@ -331,8 +331,7 @@ pub extern "C" fn mint() {
     let _operator_data:Bytes = runtime::get_named_arg("operator_data");
              
     _mint(token_holder, amount, _data, _operator_data);
-//    set_key::<U256>(&logging_key(),amount);       
-    
+        
 }
 
 // All session code must have a `call` entrypoint.
@@ -346,8 +345,6 @@ pub extern "C" fn call() {
     let token_total_supply: U256 = runtime::get_named_arg("token_total_supply");
    
     let token_operator: bool = true;
-
-
 
   //  let token_granularity: U256 = runtime::get_named_arg("token_granularity");
    
@@ -540,14 +537,7 @@ pub extern "C" fn call() {
        storage::new_uref(token_operator).into(),
     );
 
-     named_keys.insert(default_operator_key(), storage::new_uref(token_default_operators).into());
-
-
-   //  named_keys.insert(set_key::<bool>(is_operator_for_main(&operator, &token_holder), val); 
-  //  named_keys.insert(
-    //   logging_key(),
-    //   false,
-   // ); 
+    named_keys.insert(default_operator_key(), storage::new_uref(token_default_operators).into());
     
     let (contract_hash, _) =
         storage::new_locked_contract(entry_points, Some(named_keys), None, None);
