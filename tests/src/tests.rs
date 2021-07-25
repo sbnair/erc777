@@ -11,11 +11,7 @@ fn test_erc777_deploy() {
     println!("Account of Joe: {}", t.joe);
 //    assert_eq!(t.decimals(), token_cfg::DECIMALS);
     assert_eq!(t.total_supply(), token_cfg::total_supply());
- //   assert_eq!(t.balance_of(t.bob), 0.into());
- //   assert_eq!(t.allowance(t.ali, t.ali), 0.into());
-  //  assert_eq!(t.allowance(t.ali, t.bob), 0.into());
-  //  assert_eq!(t.allowance(t.bob, t.ali), 0.into());
-  //  assert_eq!(t.allowance(t.bob, t.bob), 0.into());
+ 
 }
 
 #[test]
@@ -33,10 +29,8 @@ fn test_erc777_transfer() {
 #[test]
 fn test_erc777_operator() {
     let mut t = Token::deployed();
-   println!("is_operator_for: {}", t.is_operator_for(t.ali,t.ali));
-
-  //  assert_eq!(t.is_operator_for(t.ali,t.ali), false);
-  //  assert_eq!(t.is_operator_for(t.ali,t.bob),false);
+    
+    println!("is_operator_for: {}", t.is_operator_for(t.ali,t.ali));
 
     println!("Logging: {}", t.logging()); 
 }
@@ -49,16 +43,16 @@ fn approve_and_transferfrom_invalidtoken()
     t.mint_token(t.bob, 2.into(), Sender(t.ali));
     println!("Mint token: {}", t.bob);
     println!("Balance Token: {}", t.balance_of(t.bob));
-     assert_eq!(t.balance_of(t.bob), 3.into());                  // should pass, ali now has two token
+     assert_eq!(t.balance_of(t.bob), 3.into());                 
     // println!("Logging: {}", t.logging()); 
     // Approving invalid token
-   t.approve(t.bob, 3.into(), Sender(t.ali));                  // token 3 doesnot exist
-  //  assert_ne!(t.owner_of(3.into()), t.bob);                    // Not Equal should pass, because id 3 is a non extent token and its owner should not be bob
+   t.approve(t.bob, 3.into(), Sender(t.ali));                 
+  //  assert_ne!(t.owner_of(3.into()), t.bob);                   
     println!("Mint token1: {}",t.joe);
     // TransferFrom invalid token
    t.transfer_from(t.ali, t.joe, 3.into() ,Sender(t.bob));
-    assert_eq!(t.balance_of(t.joe), 0.into());                  // joe's balance should still be zero, because the transfer above should not have gone through
-    assert_eq!(t.balance_of(t.ali), 5.into());                  // Ali's balances should remain same
+    assert_eq!(t.balance_of(t.joe), 0.into());                  
+    assert_eq!(t.balance_of(t.ali), 5.into());                  
 }
 
 #[test]
@@ -107,21 +101,17 @@ fn test_erc777_authorize_operator() {
     let mut t = Token::deployed();
     t.authorize_operator(t.ali, Sender(t.ali));
 
-//    t.authorize_operator(t.ali, Sender(t.bob));
-    // println!("is_operator_for authorize: {}", t.is_operator_for(t.ali,t.bob));  
      println!("Logging: {}", t.logging()); 
      assert_eq!(t.is_operator_for(t.ali,t.ali), true);
-  //  assert_eq!(t.is_operator_for(t.ali,t.bob),false); 
+
 }
 
 #[test]
 fn test_erc777_revoke_operator() {
     let mut t = Token::deployed();
     t.revoke_operator(t.ali, Sender(t.ali));
-  //   t.revoke_operator(t.ali, Sender(t.bob));
-   //  println!("is_operator_fo revoke: {}", t.is_operator_for(t.ali,t.ali));
+
     println!("Logging: {}", t.logging()); 
     assert_eq!(t.is_operator_for(t.ali,t.ali), false);
-  //  assert_eq!(t.is_operator_for(t.ali,t.bob), true);
-  //  assert_eq!(t.is_operator_for(t.ali,t.bob, Sender(t.ali)),false);
+
 }
