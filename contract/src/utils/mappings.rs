@@ -35,8 +35,20 @@ pub fn logging_key() -> String {
     format!("_logging_{}", 1)
 }
 
+pub fn default_operator_key() -> String {
+    format!("_default_operator_{}", "s")
+}
+
+pub fn revoke_operator_key(sender: &AccountHash, operator: &AccountHash) -> String {
+    format!("_revoke_operator_{}_{}", sender, operator)
+}
+
 pub fn is_operator_for_key(holder: &AccountHash, token_holder: &AccountHash) -> String {
     format!("_is_operator_for_{}_{}", holder, token_holder)
+}
+
+pub fn is_operator_for_main(holder: &AccountHash, token_holder: &AccountHash) -> String {
+    format!("_is_operator_for_main_{}_{}", holder, token_holder)
 }
 
 pub fn allowance_key(owner: &AccountHash, sender: &AccountHash) -> String {
@@ -68,4 +80,10 @@ pub fn set_key<T: ToBytes + CLTyped>(name: &str, value: T) {
             runtime::put_key(name, key);
         }
     }
+}
+
+pub fn remove_key(name: &str) {
+     
+    runtime::remove_key(name);
+
 }

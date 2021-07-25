@@ -99,7 +99,7 @@ pub extern "C" fn granularity() {
 #[no_mangle]
 // Get the list of default operators as defined by the token contract.
 pub extern "C" fn default_operators() {
-    let val: Vec<AccountHash> = Vec::new();
+    let val: Vec<AccountHash> = get_key::<Vec<AccountHash>>(&default_operator_key());
     ret(val);
 }
 
@@ -198,18 +198,9 @@ pub extern "C" fn is_operator_for() {
     let operator: AccountHash = runtime::get_named_arg("operator");
     
     let token_holder: AccountHash = runtime::get_named_arg("token_holder");
- 
-   // let sender: AccountHash = runtime::get_named_arg("sender");   
-    // ret (_is_operator_for(operator, token_holder));
-
-   // let resp: bool = _is_operator_for(operator, token_holder);
-   
- //   if resp {   
-   //    set_key::<U256>(&logging_key(),1.into());
-   // } else {
-     //  set_key::<U256>(&logging_key(),2.into());  
-  //  }
-    let val: bool = get_key::<bool>(&is_operator_for_key(&operator, &token_holder));
+    
+    let val: bool = _is_operator_for(operator, token_holder);
+    
     ret(val)
 }
 
@@ -356,9 +347,11 @@ pub extern "C" fn call() {
    
     let token_operator: bool = true;
 
+
+
   //  let token_granularity: U256 = runtime::get_named_arg("token_granularity");
    
-  //  let token_default_operators: Vec<AccountHash> = runtime::get_named_arg("token_default_operators"); 
+    let token_default_operators: Vec<AccountHash> = Vec::new(); 
     // Get the optional first argument supplied to the argument.
  //   let value: String = runtime::get_named_arg(ARG_MESSAGE);
   //  store(value);
@@ -547,6 +540,10 @@ pub extern "C" fn call() {
        storage::new_uref(token_operator).into(),
     );
 
+     named_keys.insert(default_operator_key(), storage::new_uref(token_default_operators).into());
+
+
+   //  named_keys.insert(set_key::<bool>(is_operator_for_main(&operator, &token_holder), val); 
   //  named_keys.insert(
     //   logging_key(),
     //   false,
