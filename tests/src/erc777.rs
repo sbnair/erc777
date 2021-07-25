@@ -22,10 +22,6 @@ pub mod token_cfg {
         let val: Vec<AccountHash> = Vec::new();
         return val; 
      }
-    pub fn token_message() -> String {
-       return "special_value".to_string(); 
-    }  
- 
 }
 
 pub struct Sender(pub AccountHash);
@@ -57,8 +53,7 @@ impl Token {
           //  "token_decimals" => token_cfg::DECIMALS,
             "token_total_supply" => token_cfg::total_supply(),
           //  "token_granularity" =>  token_cfg::total_granularity(),
-          //  "token_default_operators" => token_cfg::token_default_operators(),
-          //  "message" => token_cfg::token_message()
+          //  "token_default_operators" => token_cfg::token_default_operators(),         
         };
         let session = SessionBuilder::new(session_code, session_args)
             .with_address(alic.to_account_hash())
@@ -92,7 +87,7 @@ impl Token {
                 let value = maybe_value
                     .into_t()
                     .unwrap_or_else(|_| panic!("{} is not expected type.", name));
-               // println!("{}",value.to_string());
+              
                 Some(value)
             }
         }
@@ -131,8 +126,8 @@ impl Token {
     }
 
     pub fn logging(&self) -> U256 {
-        let key = format!("_logging_{}", 1);
-       println!("{}",key);
+       let key = format!("_logging_{}", 1);
+      
        self.query_contract(&key).unwrap_or_default()
     }
 
@@ -174,17 +169,10 @@ impl Token {
    
 
     pub fn is_operator_for(&mut self, holder: AccountHash, token_holder: AccountHash) -> bool {
+        
         let key = format!("_is_operator_for_{}_{}", &holder, &token_holder);
-        self.query_contract(&key).unwrap_or_default()
-      //    self.call(
-        //    Sender(holder),
-          //  "is_operator_for",
-         //   runtime_args! {
-           //     "holder" => holder,
-             //   "token_holder" => token_holder
-          //  },
-       // );
-      //  true   
+    
+        self.query_contract(&key).unwrap_or_default()    
     }
 
 
