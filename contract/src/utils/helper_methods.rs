@@ -40,25 +40,6 @@ pub fn _is_operator_for(_operator: AccountHash, _token_holder: AccountHash) -> b
     return val;
 }
 
-// Checks the operator.
-fn _is_operator_for_check(_operator: AccountHash, _token_holder: AccountHash) -> bool {
-
-    let _default_op: bool = get_key::<bool>(&default_operator_key());
-
-  //  let revoke_op: bool = get_key::<bool>(&revoke_operator_key(&_operator, &_token_holder));
-
-  //  let is_op_val: bool = get_key::<bool>(&is_operator_for_key(&_operator, &_token_holder));
-
-  //  let val: bool = _operator == _token_holder || (default_op && !revoke_op) || is_op_val;
-
-   // set_key::<bool>(&is_operator_for_main(&_operator, &_token_holder), val);
-    
-   return _default_op;
-}
-
-
-
-
 pub fn _authorize_operator(_operator: AccountHash, _holder: AccountHash) -> *const c_char {
    
     if ! (_operator == _holder) {
@@ -97,8 +78,6 @@ pub fn _authorize_operator(_operator: AccountHash, _holder: AccountHash) -> *con
     set_key::<U256>(&logging_key(),6.into());
 
 
-//    set_key::<bool>(&is_operator_for_key(&_operator, &_holder), true);
-
     let _revoke_op: bool = get_key::<bool>(&revoke_operator_key(&_operator, &_holder));
 
     let _is_op_val: bool = get_key::<bool>(&is_operator_for_key(&_operator, &_holder));
@@ -106,8 +85,6 @@ pub fn _authorize_operator(_operator: AccountHash, _holder: AccountHash) -> *con
     let _val: bool = _operator == _holder || (! (doperator == None) && !_revoke_op) || _is_op_val;
 
     set_key::<bool>(&is_operator_for_main(&_operator, &_holder), _val);
-
- //  _is_operator_for_check(_operator, _holder);
     
     return "true".as_ptr() as *const c_char;   
 }
@@ -163,9 +140,6 @@ pub fn _revoke_operator(_operator: AccountHash, _holder: AccountHash) -> *const 
     let _val: bool = _operator == _holder || (! (doperator == None) && !_revoke_op) || _is_op_val;
 
     set_key::<bool>(&is_operator_for_main(&_operator, &_holder), _val);
-
-   // set_key::<bool>(&is_operator_for_key(&_operator, &_holder), false);
-  //   _is_operator_for_check(_operator, _holder);
    
      return "true".as_ptr() as *const c_char;
 }
@@ -198,8 +172,7 @@ pub fn _before_token_transfer(_operator: AccountHash, _from: AccountHash, _to: A
 }
 
 pub fn _move(_operator: AccountHash, _from: AccountHash, _to: AccountHash, _amount: U256, _user_data:Bytes, _operator_data: Bytes) -> *const c_char {
-
-	// set_key(&allowance_key(&operator, &sender),U256::one());
+	
     _before_token_transfer(_operator, _from, _to, _amount);
 
      let from_balance: U256 = get_key::<U256>(&balance_key(&_from));
@@ -226,7 +199,6 @@ pub fn _mint(_account: AccountHash, _amount: U256, _data:Bytes, _operator_data:B
 
 pub fn _mintcheck(_account: AccountHash, _amount: U256, _data: Bytes, _operator_data: Bytes, _require_reception_ack: bool) -> *const c_char {
 
-	// set_key(&allowance_key(&operator, &sender),U256::one());
     if  _exists_owner(_account) {
 
     	 return "ERC777: mint to the zero address".as_ptr() as *const c_char;
@@ -234,7 +206,7 @@ pub fn _mintcheck(_account: AccountHash, _amount: U256, _data: Bytes, _operator_
 
     set_key(&"total_supply",get_key::<U256>(&"total_supply").saturating_add(_amount));   
    // println!("balance : {}",&balance_key(&_account));        
-   //  set_key::<U256>(&logging_key(), get_key::<U256>(&balance_key(&_account)).saturating_add(_amount)); 
+ 
     set_key::<U256>(&balance_key(&_account),get_key::<U256>(&balance_key(&_account)).saturating_add(_amount));
 
     return "true".as_ptr() as *const c_char;
