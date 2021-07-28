@@ -14,7 +14,7 @@ use std::os::raw::c_char;
 use super::mappings::*;
 
 
-// Checks whether Account exists or not.
+/// Checks whether Account exists or not.
 pub fn _exists_owner(_owner_id: AccountHash) -> bool {
 
      let zero_addr: AccountHash = AccountHash::from_formatted_str("account-hash-0000000000000000000000000000000000000000000000000000000000000000").unwrap_or_default();
@@ -24,7 +24,7 @@ pub fn _exists_owner(_owner_id: AccountHash) -> bool {
      owner == zero_addr
 }
 
-// Checks the operator.
+/// Checks the operator.
 pub fn _is_operator_for(_operator: AccountHash, _token_holder: AccountHash) -> bool {
       
     let default_op: bool = get_key::<bool>(&default_operator_key());
@@ -40,6 +40,7 @@ pub fn _is_operator_for(_operator: AccountHash, _token_holder: AccountHash) -> b
     return val;
 }
 
+/// Checks the authorize operator.
 pub fn _authorize_operator(_operator: AccountHash, _holder: AccountHash) -> *const c_char {
    
     if ! (_operator == _holder) {
@@ -89,12 +90,14 @@ pub fn _authorize_operator(_operator: AccountHash, _holder: AccountHash) -> *con
     return "true".as_ptr() as *const c_char;   
 }
 
+/// Gets the allowance.
 pub fn _allowance(_holder: AccountHash, _spender: AccountHash) {
    
     let val: U256 = get_key::<U256>(&allowance_key(&_holder, &_spender));
     ret(val);   
 }
 
+/// revokes operator permission
 pub fn _revoke_operator(_operator: AccountHash, _holder: AccountHash) -> *const c_char {
      
     if ! (_operator == _holder) {
@@ -144,6 +147,7 @@ pub fn _revoke_operator(_operator: AccountHash, _holder: AccountHash) -> *const 
      return "true".as_ptr() as *const c_char;
 }
 
+/// Sets the allowance key
 pub fn _set_allowance_key(_operator: AccountHash, _sender: AccountHash, _value: U256) {
 
 	 set_key(&allowance_key(&_operator, &_sender),_value);
@@ -170,7 +174,7 @@ pub fn _before_token_transfer(_operator: AccountHash, _from: AccountHash, _to: A
     // set_key(&allowance_key(&operator, &sender),U256::one());
 
 }
-
+/// Moves the data
 pub fn _move(_operator: AccountHash, _from: AccountHash, _to: AccountHash, _amount: U256, _user_data:Bytes, _operator_data: Bytes) -> *const c_char {
 	
     _before_token_transfer(_operator, _from, _to, _amount);
@@ -190,7 +194,7 @@ pub fn _move(_operator: AccountHash, _from: AccountHash, _to: AccountHash, _amou
 
 }
 
-
+/// Mints the token.
 pub fn _mint(_account: AccountHash, _amount: U256, _data:Bytes, _operator_data:Bytes) -> *const c_char {
 
 	
@@ -212,6 +216,7 @@ pub fn _mintcheck(_account: AccountHash, _amount: U256, _data: Bytes, _operator_
     return "true".as_ptr() as *const c_char;
 }
 
+/// Sends the token
 pub fn _send(_from: AccountHash, _to: AccountHash, _amount: U256, _data: Bytes, _operator_data: Bytes, _require_reception_ack: bool) -> *const c_char {
           
            
@@ -234,6 +239,7 @@ pub fn _send(_from: AccountHash, _to: AccountHash, _amount: U256, _data: Bytes, 
 
 }
 
+/// Burns the token
 pub fn _burn(_from: AccountHash, _amount: U256, _data: Bytes, _operator_data: Bytes) -> *const c_char {
         
         if  _exists_owner(_from) {
@@ -245,6 +251,7 @@ pub fn _burn(_from: AccountHash, _amount: U256, _data: Bytes, _operator_data: By
 
 }
 
+/// Aproves the holder and spender.
 pub fn _approve(_holder: AccountHash, _spender: AccountHash, _value: U256) -> *const c_char {
         
         if  _exists_owner(_holder) {
