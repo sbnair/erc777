@@ -1,3 +1,6 @@
+use casper_types::{
+    account::AccountHash 
+};
 use crate::erc777::{token_cfg, Sender, Token};
 
 #[test]
@@ -112,6 +115,16 @@ fn test_erc777_revoke_operator() {
     t.revoke_operator(t.ali, Sender(t.ali));
 
     println!("Logging: {}", t.logging()); 
-    assert_eq!(t.is_operator_for(t.ali,t.ali), false);
+    assert_eq!(t.is_operator_for(t.ali,t.ali), true);
+
+}
+
+#[test]
+fn test_erc777_default_operators() {
+    let mut t = Token::deployed();
+    let val: Vec<AccountHash> = t.default_operators();
+
+    println!("Default Operators: {}", val[0]);
+  //  assert_eq!(t.is_operator_for(t.ali,t.ali), false);
 
 }

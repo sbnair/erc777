@@ -115,6 +115,12 @@ impl Token {
         self.query_contract("decimals").unwrap()
     }
 
+    pub fn default_operators(&self) -> Vec<AccountHash> {
+     
+        let key = format!("_default_operator_{}", "s"); 
+        self.query_contract(&key).unwrap()
+    }
+
     pub fn total_supply(&self) -> U256 {
         self.query_contract("total_supply").unwrap()
     }
