@@ -39,35 +39,35 @@ use utils::helper_methods::*;
 use utils::mappings::*;
 
 #[no_mangle]
-// Gets the name of token
+/// Gets the name of token
 pub extern "C" fn name() {
     let val: String = get_key("name");
     ret(val)
 }
 
 #[no_mangle]
-// Gets the symbol of token
+/// Gets the symbol of token
 pub extern "C" fn symbol() {
     let val: String = get_key("symbol");
     ret(val)
 }
 
 #[no_mangle]
-// Gets the decimals of token
+/// Gets the decimals of token
 pub extern "C" fn decimals() {
     let val: U256 = U256::from(18);
     ret(val)
 }
 
 #[no_mangle]
-// Gets the total supply of token
+/// Gets the total supply of token
 pub extern "C" fn total_supply() {
     let val: U256 = get_key("total_supply");
     ret(val)
 }
 
 #[no_mangle]
-// Gets the balance of account
+/// Gets the balance of account
 pub extern "C" fn balance_of() {
     let account: AccountHash = runtime::get_named_arg("account");
     let val: U256 = get_key::<U256>(&balance_key(&account));
@@ -75,21 +75,21 @@ pub extern "C" fn balance_of() {
 }
 
 #[no_mangle]
-// Get the smallest part of the token that’s not divisible.
+/// Get the smallest part of the token that’s not divisible.
 pub extern "C" fn granularity() {
     let val: U256 = U256::from(1);
     ret(val)
 }
 
 #[no_mangle]
-// Get the list of default operators as defined by the token contract.
+/// Get the list of default operators as defined by the token contract.
 pub extern "C" fn default_operators() {
     let val: Vec<AccountHash> = get_key::<Vec<AccountHash>>(&default_operator_key());
     ret(val);
 }
 
 #[no_mangle]
-// Set a third party operator address as an operator of msg.sender to send and burn tokens on its behalf.
+/// Set a third party operator address as an operator of msg.sender to send and burn tokens on its behalf.
 pub extern "C" fn authorize_operator() {
     let operator: AccountHash = runtime::get_named_arg("operator");
     
@@ -97,7 +97,7 @@ pub extern "C" fn authorize_operator() {
 }
 
 #[no_mangle]
-// Remove the right of the operator address to be an operator for msg.sender and to send and burn tokens on its behalf.
+/// Remove the right of the operator address to be an operator for msg.sender and to send and burn tokens on its behalf.
 pub extern "C" fn revoke_operator() {
     let operator: AccountHash = runtime::get_named_arg("operator");
   
@@ -107,8 +107,8 @@ pub extern "C" fn revoke_operator() {
 
 
 #[no_mangle]
-// * Unlike `send`, `recipient` is _not_ required to implement the {IERC777Recipient}
-//     * interface if it is a contract.
+/// Unlike `send`, `recipient` is _not_ required to implement the {IERC777Recipient}
+/// interface if it is a contract.
 pub extern "C" fn transfer() -> *const c_char {
     let recipient: AccountHash = runtime::get_named_arg("recipient");
 
@@ -133,9 +133,9 @@ pub extern "C" fn transfer() -> *const c_char {
 
 
 #[no_mangle]
-// Note that operator and allowance concepts are orthogonal: operators cannot
-//     * call `transferFrom` (unless they have allowance), and accounts with
-//     * allowance cannot call `operatorSend` (unless they are operators).
+/// Note that operator and allowance concepts are orthogonal: operators cannot
+/// call `transferFrom` (unless they have allowance), and accounts with
+/// allowance cannot call `operatorSend` (unless they are operators).
 pub extern "C" fn transfer_from() -> *const c_char {
 
     let holder: AccountHash = runtime::get_named_arg("holder");
@@ -177,7 +177,7 @@ pub extern "C" fn transfer_from() -> *const c_char {
 }
 
 #[no_mangle]
-// Indicate whether the operator address is an operator of the holder address.
+/// Indicate whether the operator address is an operator of the holder address.
 pub extern "C" fn is_operator_for() {
 
     let operator: AccountHash = runtime::get_named_arg("operator");
@@ -190,7 +190,7 @@ pub extern "C" fn is_operator_for() {
 }
 
 #[no_mangle]
-//  * Note that accounts cannot have allowance issued by their operators.
+/// Note that accounts cannot have allowance issued by their operators.
 pub extern "C" fn approve() {
    
     let holder: AccountHash = runtime::get_caller();
@@ -205,13 +205,13 @@ pub extern "C" fn approve() {
 
 
 #[no_mangle]
-//  * @dev Send tokens
-//     * @param from address token holder address
-//     * @param to address recipient address
-//     * @param amount uint256 amount of tokens to transfer
-//     * @param userData bytes extra information provided by the token holder (if any)
-//     * @param operatorData bytes extra information provided by the operator (if any)
-//     * @param requireReceptionAck if true, contract recipients are required to implement ERC777TokensRecipient
+///   Send tokens
+///      @param from address token holder address
+///      @param to address recipient address
+///      @param amount uint256 amount of tokens to transfer
+///      @param userData bytes extra information provided by the token holder (if any)
+///      @param operatorData bytes extra information provided by the operator (if any)
+///      @param requireReceptionAck if true, contract recipients are required to implement ERC777TokensRecipient
 pub extern "C" fn send() {
    
     let to: AccountHash = runtime::get_named_arg("to");
@@ -226,11 +226,11 @@ pub extern "C" fn send() {
 
 
 #[no_mangle]
-//  * @dev Burn tokens
-//     * @param from address token holder address
-//     * @param amount uint256 amount of tokens to burn
-//     * @param data bytes extra information provided by the token holder
-//     * @param operatorData bytes extra information provided by the operator (if any)
+///   Burn tokens
+///     @param from address token holder address
+///     @param amount uint256 amount of tokens to burn
+///     @param data bytes extra information provided by the token holder
+///     @param operatorData bytes extra information provided by the operator (if any)
 pub extern "C" fn burn() {
     
     let amount: U256 = runtime::get_named_arg("amount");
@@ -243,7 +243,7 @@ pub extern "C" fn burn() {
 
 
 #[no_mangle]
-// Send the amount of tokens on behalf of the address from to the address to.
+/// Send the amount of tokens on behalf of the address from to the address to.
 pub extern "C" fn operator_send() -> *const c_char {
     
     let to: AccountHash = runtime::get_named_arg("recipient");
@@ -266,7 +266,7 @@ pub extern "C" fn operator_send() -> *const c_char {
 }
 
 #[no_mangle]
-// The operator and the holder MUST both be the msg.sender.
+/// The operator and the holder MUST both be the msg.sender.
 pub extern "C" fn operator_burn() -> *const c_char {
     
     let account: AccountHash = runtime::get_named_arg("account");
@@ -288,9 +288,9 @@ pub extern "C" fn operator_burn() -> *const c_char {
 
 
 #[no_mangle]
-// * Note that operator and allowance concepts are orthogonal: operators may
-//    * not have allowance, and accounts with allowance may not be operators
-//     * themselves.
+/// Note that operator and allowance concepts are orthogonal: operators may
+///   not have allowance, and accounts with allowance may not be operators
+///   themselves.
 pub extern "C" fn allowance() {
     let holder: AccountHash = runtime::get_caller();
    
@@ -300,11 +300,11 @@ pub extern "C" fn allowance() {
 }
 
 #[no_mangle]
-// * @dev Creates `amount` tokens and assigns them to `account`, increasing
-//     * the total supply.
-//     *
-//     * If a send hook is registered for `account`, the corresponding function
-//     * will be called with `operator`, `data` and `operatorData`.
+///     Creates `amount` tokens and assigns them to `account`, increasing
+///     the total supply.
+///     
+///     If a send hook is registered for `account`, the corresponding function
+///     will be called with `operator`, `data` and `operatorData`.
 pub extern "C" fn mint() {
             
     let token_holder: AccountHash = runtime::get_named_arg("token_holder");
@@ -319,7 +319,7 @@ pub extern "C" fn mint() {
         
 }
 
-// All session code must have a `call` entrypoint.
+/// All session code must have a `call` entrypoint.
 #[no_mangle]
 pub extern "C" fn call() {
    
