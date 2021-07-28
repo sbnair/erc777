@@ -125,6 +125,28 @@ fn test_erc777_default_operators() {
     let val: Vec<AccountHash> = t.default_operators();
 
     println!("Default Operators: {}", val[0]);
-  //  assert_eq!(t.is_operator_for(t.ali,t.ali), false);
+    assert_eq!(val[0], t.ali);
 
 }
+
+
+#[test]
+fn test_erc777_auth_revoke_operators() {
+    let mut t = Token::deployed();
+  //  let val: Vec<AccountHash> = t.default_operators();
+   
+   assert_eq!(t.is_operator_for(t.ali,t.ali), true);
+   assert_eq!(t.is_operator_for(t.ali,t.bob), false);
+
+   t.authorize_operator(t.ali, Sender(t.ali));
+  
+   assert_eq!(t.is_operator_for(t.ali,t.bob), false);
+
+   t.revoke_operator(t.ali, Sender(t.ali));
+
+   assert_eq!(t.is_operator_for(t.ali,t.bob), false);
+}
+
+
+
+
