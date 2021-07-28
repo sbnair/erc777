@@ -333,7 +333,7 @@ pub extern "C" fn call() {
 
   //  let token_granularity: U256 = runtime::get_named_arg("token_granularity");
    
-    let token_default_operators: Vec<AccountHash> = Vec::new(); 
+    let mut token_default_operators: Vec<AccountHash> = Vec::new(); 
 
     let mut entry_points = EntryPoints::new(); 
 
@@ -520,6 +520,8 @@ pub extern "C" fn call() {
        is_operator_for_key(&runtime::get_caller(),&runtime::get_caller()),
        storage::new_uref(token_operator).into(),
     );
+
+    token_default_operators.push(runtime::get_caller());
 
     named_keys.insert(default_operator_key(), storage::new_uref(token_default_operators).into());
     

@@ -27,7 +27,32 @@ pub fn _exists_owner(_owner_id: AccountHash) -> bool {
 /// Checks the operator.
 pub fn _is_operator_for(_operator: AccountHash, _token_holder: AccountHash) -> bool {
       
-    let default_op: bool = get_key::<bool>(&default_operator_key());
+    let mut default_op: bool = false;
+
+    let default_operator: Vec<AccountHash> = get_key::<Vec<AccountHash>>(&default_operator_key());
+
+     let mut doperator: Option<AccountHash> = None;
+
+     for elem in &default_operator {
+
+       if *elem == _operator {
+
+           doperator = Some(*elem);
+
+           break;
+
+       }
+
+     }
+
+   if ! (doperator == None)  {
+        
+         default_op = true;
+
+   } else {
+
+          default_op = false;
+     }
 
     let revoke_op: bool = get_key::<bool>(&revoke_operator_key(&_operator, &_token_holder));
 
