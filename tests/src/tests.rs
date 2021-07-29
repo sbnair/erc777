@@ -135,18 +135,18 @@ fn test_erc777_auth_revoke_operators() {
     let mut t = Token::deployed();
  
    
-   assert_eq!(t.is_operator_for(t.ali,t.ali), true);
-   assert_eq!(t.is_operator_for(t.ali,t.bob), false);
+   assert_eq!(t.is_operator_for(t.ali,t.ali), true); // Default operator is ali
+   assert_eq!(t.is_operator_for(t.ali,t.bob), false); // bob is not a default operator
 
-   t.authorize_operator(t.bob, Sender(t.bob));
+   t.authorize_operator(t.bob, Sender(t.bob)); // Authorized Bob as the default operator
 
  // println!("Logging: {}", t.logging());
   
-   assert_eq!(t.is_operator_for(t.bob,t.bob), true);
+   assert_eq!(t.is_operator_for(t.bob,t.bob), true); // Bob as a default operator works
 
-   t.revoke_operator(t.ali, Sender(t.ali));
+   t.revoke_operator(t.ali, Sender(t.ali)); // Removes ali as a default operator
 
-   assert_eq!(t.is_operator_for(t.ali,t.bob), false);
+   assert_eq!(t.is_operator_for(t.ali,t.bob), false); // ali is not a default operator.
 }
 
 
