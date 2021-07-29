@@ -27,7 +27,7 @@ pub fn _exists_owner(_owner_id: AccountHash) -> bool {
 /// Checks the operator.
 pub fn _is_operator_for(_operator: AccountHash, _token_holder: AccountHash) -> bool {
       
-    let mut default_op: bool = false;
+    let default_op: bool;
 
     let default_operator: Vec<AccountHash> = get_key::<Vec<AccountHash>>(&default_operator_key());
 
@@ -78,7 +78,7 @@ pub fn _authorize_operator(_operator: AccountHash, _holder: AccountHash) -> *con
        
     }
 
-     let default_operator: Vec<AccountHash> = get_key::<Vec<AccountHash>>(&default_operator_key());
+     let mut default_operator: Vec<AccountHash> = get_key::<Vec<AccountHash>>(&default_operator_key());
     
      let mut doperator: Option<AccountHash> = None;
 
@@ -93,13 +93,22 @@ pub fn _authorize_operator(_operator: AccountHash, _holder: AccountHash) -> *con
        }
 
      }
+ 
+   if  doperator == None {
+
+         default_operator.push(_operator);
+
+         doperator = Some(_operator);
+
+         set_key::<Vec<AccountHash>>(&default_operator_key(), default_operator);    
+   }  
 
    if ! (doperator == None)  {
          remove_key(&revoke_operator_key(&_operator, &_holder));
 
    } else {
 
-          set_key::<bool>(&is_operator_for_key(&_operator, &_holder), true);
+        set_key::<bool>(&is_operator_for_key(&_operator, &_holder), true);
      }
     set_key::<U256>(&logging_key(),6.into());
 
@@ -111,6 +120,16 @@ pub fn _authorize_operator(_operator: AccountHash, _holder: AccountHash) -> *con
     let _val: bool = _operator == _holder || (! (doperator == None) && !_revoke_op) || _is_op_val;
 
     set_key::<bool>(&is_operator_for_main(&_operator, &_holder), _val);
+
+    if _val {
+
+         set_key::<U256>(&logging_key(), 7.into());
+
+    } else {
+
+         set_key::<U256>(&logging_key(), 9.into());
+
+    }
     
     return "true".as_ptr() as *const c_char;   
 }
@@ -134,7 +153,7 @@ pub fn _revoke_operator(_operator: AccountHash, _holder: AccountHash) -> *const 
           return "ERC777: revoking self as operator".as_ptr() as *const c_char;  
     }
 
-   let default_operator: Vec<AccountHash> = get_key::<Vec<AccountHash>>(&default_operator_key());
+   let mut default_operator: Vec<AccountHash> = get_key::<Vec<AccountHash>>(&default_operator_key());
 
    let mut doperator: Option<AccountHash> = None;
 
@@ -152,7 +171,14 @@ pub fn _revoke_operator(_operator: AccountHash, _holder: AccountHash) -> *const 
 
    if ! (doperator == None)  {
 
-          set_key::<bool>(&revoke_operator_key(&_operator, &_holder), true);
+         let index = default_operator.iter().position(|x| *x == doperator.unwrap()).unwrap();
+
+         default_operator.remove(index); 
+          
+         set_key::<Vec<AccountHash>>(&default_operator_key(), default_operator);
+  
+         set_key::<bool>(&revoke_operator_key(&_operator, &_holder), true);
+
    } else {
         
          remove_key(&is_operator_for_key(&_operator, &_holder));  
@@ -161,7 +187,7 @@ pub fn _revoke_operator(_operator: AccountHash, _holder: AccountHash) -> *const 
 
     set_key::<U256>(&logging_key(),9.into());
 
-     let _revoke_op: bool = get_key::<bool>(&revoke_operator_key(&_operator, &_holder));
+    let _revoke_op: bool = get_key::<bool>(&revoke_operator_key(&_operator, &_holder));
 
     let _is_op_val: bool = get_key::<bool>(&is_operator_for_key(&_operator, &_holder));
 

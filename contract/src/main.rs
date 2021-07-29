@@ -517,7 +517,7 @@ pub extern "C" fn call() {
     );
 
     named_keys.insert(
-       is_operator_for_key(&runtime::get_caller(),&runtime::get_caller()),
+       is_operator_for_main(&runtime::get_caller(),&runtime::get_caller()),
        storage::new_uref(token_operator).into(),
     );
 
