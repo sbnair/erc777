@@ -176,7 +176,7 @@ impl Token {
 
     pub fn is_operator_for(&mut self, holder: AccountHash, token_holder: AccountHash) -> bool {
         
-        let key = format!("_is_operator_for_{}_{}", &holder, &token_holder);
+        let key = format!("_is_operator_for_main_{}_{}", &holder, &token_holder);
     
         self.query_contract(&key).unwrap_or_default()    
     }

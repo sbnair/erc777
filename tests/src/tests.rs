@@ -133,14 +133,16 @@ fn test_erc777_default_operators() {
 #[test]
 fn test_erc777_auth_revoke_operators() {
     let mut t = Token::deployed();
-  //  let val: Vec<AccountHash> = t.default_operators();
+ 
    
    assert_eq!(t.is_operator_for(t.ali,t.ali), true);
    assert_eq!(t.is_operator_for(t.ali,t.bob), false);
 
-   t.authorize_operator(t.ali, Sender(t.ali));
+   t.authorize_operator(t.bob, Sender(t.bob));
+
+ // println!("Logging: {}", t.logging());
   
-   assert_eq!(t.is_operator_for(t.ali,t.bob), false);
+   assert_eq!(t.is_operator_for(t.bob,t.bob), true);
 
    t.revoke_operator(t.ali, Sender(t.ali));
 
