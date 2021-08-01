@@ -28,10 +28,6 @@ pub fn balance_key(account: &AccountHash) -> String {
     format!("_balance_{}", account)
 }
 
-pub fn logging_key() -> String {
-    format!("_logging_{}", 1)
-}
-
 pub fn default_operator_key() -> String {
     format!("_default_operator_{}", "s")
 }
