@@ -101,6 +101,10 @@ fn test_erc777_burn() {
     
     t.burn_token(amount, Sender(t.ali));
     
+    println!("Balance of {}", t.balance_of(t.ali));
+    
+    println!("Token Supply of {}", t.total_supply());
+    
     assert_eq!(t.balance_of(t.ali), 3.into());
     
     assert_eq!(t.total_supply(), token_cfg::total_supply());
