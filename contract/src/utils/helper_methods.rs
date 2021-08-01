@@ -250,7 +250,7 @@ pub fn _burn(_from: AccountHash, _amount: U256, _data: Bytes, _operator_data: By
 	    return "ERC777: burn amount exceeds balance".as_ptr() as *const c_char;
 	}	
 
-	set_key(&balance_key(&_from),get_key::<U256>(_from_balance.saturating_sub(_amount));
+	set_key(&balance_key(&_from),get_key::<U256>(get_key::<U256>(&balance_key(&_from)).saturating_sub(_amount)));
 	
 	set_key(&"total_supply",get_key::<U256>(&"total_supply").saturating_sub(_amount));	
 	 
