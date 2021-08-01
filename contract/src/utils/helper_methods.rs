@@ -235,8 +235,25 @@ pub fn _burn(_from: AccountHash, _amount: U256, _data: Bytes, _operator_data: By
         if  _exists_owner(_from) {
 
     	      return "ERC777: burn from the zero address".as_ptr() as *const c_char;
-        }          
+        }
+	
+	let _zero_addr: AccountHash = AccountHash::from_formatted_str("account-hash-0000000000000000000000000000000000000000000000000000000000000000").unwrap_or_default();
+	
+	_call_tokens_to_send(_from, _from, _zero_addr, _amount, _data, _operator_data);
+	
+	_before_token_transfer(_from, _from, _zero_addr, _amount);
+	
+	let _from_balance: U256 = get_key::<U256>(&balance_key(&_from));
+	
+	if _from_balance >= _amount {
+		
+	    return "ERC777: burn amount exceeds balance".as_ptr() as *const c_char;
+	}	
 
+	set_key(&balance_key(&_from),get_key::<U256>(_from_balance.saturating_sub(_amount));
+	
+	set_key(&"total_supply",get_key::<U256>(&"total_supply").saturating_sub(_amount));	
+	 
         return "true".as_ptr() as *const c_char;
 
 }
