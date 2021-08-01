@@ -24,47 +24,6 @@ pub fn _exists_owner(_owner_id: AccountHash) -> bool {
      owner == zero_addr
 }
 
-/// Checks the operator.
-pub fn _is_operator_for(_operator: AccountHash, _token_holder: AccountHash) -> bool {
-      
-    let default_op: bool;
-
-    let default_operator: Vec<AccountHash> = get_key::<Vec<AccountHash>>(&default_operator_key());
-
-     let mut doperator: Option<AccountHash> = None;
-
-     for elem in &default_operator {
-
-       if *elem == _operator {
-
-           doperator = Some(*elem);
-
-           break;
-
-       }
-
-     }
-
-   if ! (doperator == None)  {
-        
-         default_op = true;
-
-   } else {
-
-          default_op = false;
-     }
-
-    let revoke_op: bool = get_key::<bool>(&revoke_operator_key(&_operator, &_token_holder));
-
-    let is_op_val: bool = get_key::<bool>(&is_operator_for_key(&_operator, &_token_holder));
-
-    let val: bool = _operator == _token_holder || (default_op && !revoke_op) || is_op_val;
-
-    set_key::<bool>(&is_operator_for_main(&_operator, &_token_holder), val); 
-
-    return val;
-}
-
 /// Checks the authorize operator.
 pub fn _authorize_operator(_operator: AccountHash, _holder: AccountHash) -> *const c_char {
    
