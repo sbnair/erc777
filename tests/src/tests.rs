@@ -35,7 +35,7 @@ fn test_erc777_operator() {
     
     println!("is_operator_for: {}", t.is_operator_for(t.ali,t.ali));
 
-    println!("Logging: {}", t.logging()); 
+  
 }
 
 #[test]
@@ -46,8 +46,9 @@ fn approve_and_transferfrom_invalidtoken()
     t.mint_token(t.bob, 2.into(), Sender(t.ali));
     println!("Mint token: {}", t.bob);
     println!("Balance Token: {}", t.balance_of(t.bob));
-     assert_eq!(t.balance_of(t.bob), 3.into());                 
-    // println!("Logging: {}", t.logging()); 
+    
+    assert_eq!(t.balance_of(t.bob), 3.into());                 
+  
     // Approving invalid token
    t.approve(t.bob, 3.into(), Sender(t.ali));                 
   //  assert_ne!(t.owner_of(3.into()), t.bob);                   
@@ -103,8 +104,7 @@ fn test_erc777_transfer_from_too_much() {
 fn test_erc777_authorize_operator() {
     let mut t = Token::deployed();
     t.authorize_operator(t.ali, Sender(t.ali));
-
-     println!("Logging: {}", t.logging()); 
+    
      assert_eq!(t.is_operator_for(t.ali,t.ali), true);
 
 }
@@ -114,7 +114,6 @@ fn test_erc777_revoke_operator() {
     let mut t = Token::deployed();
     t.revoke_operator(t.ali, Sender(t.ali));
 
-    println!("Logging: {}", t.logging()); 
     assert_eq!(t.is_operator_for(t.ali,t.ali), true);
 
 }
@@ -140,7 +139,6 @@ fn test_erc777_auth_revoke_operators() {
 
    t.authorize_operator(t.bob, Sender(t.bob)); // Authorized Bob as the default operator
 
- // println!("Logging: {}", t.logging());
   
    assert_eq!(t.is_operator_for(t.bob,t.bob), true); // Bob as a default operator works
 
