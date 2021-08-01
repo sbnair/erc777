@@ -184,7 +184,7 @@ pub extern "C" fn is_operator_for() {
     
     let token_holder: AccountHash = runtime::get_named_arg("token_holder");
     
-    let val: bool = get_key::<bool>(&is_operator_for_main(operator, token_holder));
+    let val: bool = get_key::<bool>(&is_operator_for_main(&operator, &token_holder));
     
     ret(val)
 }
