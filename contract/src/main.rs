@@ -253,12 +253,14 @@ pub extern "C" fn operator_send() -> *const c_char {
     let _data:Bytes = runtime::get_named_arg("data");
     
     let _operator_data:Bytes = runtime::get_named_arg("operator_data");
+    
+    let val: bool = get_key::<bool>(&is_operator_for_main(&runtime::get_caller(), &to));
 
-     if _is_operator_for(runtime::get_caller(), to) {
-       
+     if val {
+    
          return "ERC777: caller is not an operator for holder".as_ptr() as *const c_char;
-     
-     }   
+ 
+    }   
     
     _send(runtime::get_caller(), to, amount, _data, _operator_data, true);
 
@@ -276,8 +278,10 @@ pub extern "C" fn operator_burn() -> *const c_char {
     let _data:Bytes = runtime::get_named_arg("data");
     
     let _operator_data:Bytes = runtime::get_named_arg("operator_data");
+    
+    let val: bool = get_key::<bool>(&is_operator_for_main(&runtime::get_caller(), &account));
 
-    if _is_operator_for(runtime::get_caller(), account) {
+    if val {
        return "ERC777: caller is not an operator for holder".as_ptr() as *const c_char; 
     }
     
