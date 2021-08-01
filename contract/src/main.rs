@@ -505,11 +505,6 @@ pub extern "C" fn call() {
      //   "default_operators".to_string(),
      //   storage::new_uref(token_default_operators).into(),
    // );
-
-    named_keys.insert(
-       logging_key(),
-       storage::new_uref(token_total_supply).into(),
-    );
     
     named_keys.insert(
        balance_key(&runtime::get_caller()),
