@@ -131,12 +131,6 @@ impl Token {
        self.query_contract(&key).unwrap_or_default()
     }
 
-    pub fn logging(&self) -> U256 {
-       let key = format!("_logging_{}", 1);
-      
-       self.query_contract(&key).unwrap_or_default()
-    }
-
     pub fn allowance(&self, owner: AccountHash, spender: AccountHash) -> U256 {
         let key = format!("_allowance_{}_{}", owner, spender);
         self.query_contract(&key).unwrap_or_default()
@@ -211,8 +205,6 @@ impl Token {
         );
     }
 
-
-    
 
     pub fn transfer_from(
         &mut self,
