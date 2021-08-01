@@ -94,6 +94,19 @@ fn test_erc777_transfer_from() {
 }
 
 #[test]
+fn test_erc777_burn() {
+    let amount = 3.into();
+    
+    let mut t = Token::deployed();
+    
+    t.burn_token(amount, Sender(t.ali));
+    
+    assert_eq!(t.balance_of(t.ali), 3.into());
+    
+    assert_eq!(t.total_supply(), token_cfg::total_supply());
+  }
+
+#[test]
 fn test_erc777_transfer_from_too_much() {
     let amount = token_cfg::total_supply().checked_add(1.into()).unwrap();
     let mut t = Token::deployed();
