@@ -70,8 +70,6 @@ pub fn _authorize_operator(_operator: AccountHash, _holder: AccountHash) -> *con
    
     if ! (_operator == _holder) {
 
-           set_key::<U256>(&logging_key(),4.into());
-         
            set_key::<bool>(&is_operator_for_key(&_operator, &_operator), false);
          
            return "ERC777: authorizing self as operator".as_ptr() as *const c_char;
@@ -110,8 +108,6 @@ pub fn _authorize_operator(_operator: AccountHash, _holder: AccountHash) -> *con
 
         set_key::<bool>(&is_operator_for_key(&_operator, &_holder), true);
      }
-    set_key::<U256>(&logging_key(),6.into());
-
 
     let _revoke_op: bool = get_key::<bool>(&revoke_operator_key(&_operator, &_holder));
 
@@ -120,17 +116,7 @@ pub fn _authorize_operator(_operator: AccountHash, _holder: AccountHash) -> *con
     let _val: bool = _operator == _holder || (! (doperator == None) && !_revoke_op) || _is_op_val;
 
     set_key::<bool>(&is_operator_for_main(&_operator, &_holder), _val);
-
-    if _val {
-
-         set_key::<U256>(&logging_key(), 7.into());
-
-    } else {
-
-         set_key::<U256>(&logging_key(), 9.into());
-
-    }
-    
+   
     return "true".as_ptr() as *const c_char;   
 }
 
@@ -146,8 +132,6 @@ pub fn _revoke_operator(_operator: AccountHash, _holder: AccountHash) -> *const 
      
     if ! (_operator == _holder) {
 
-          set_key::<U256>(&logging_key(),8.into());
-          
           set_key::<bool>(&is_operator_for_key(&_operator, &_operator), true); 
 
           return "ERC777: revoking self as operator".as_ptr() as *const c_char;  
@@ -185,8 +169,6 @@ pub fn _revoke_operator(_operator: AccountHash, _holder: AccountHash) -> *const 
         
     }
 
-    set_key::<U256>(&logging_key(),9.into());
-
     let _revoke_op: bool = get_key::<bool>(&revoke_operator_key(&_operator, &_holder));
 
     let _is_op_val: bool = get_key::<bool>(&is_operator_for_key(&_operator, &_holder));
@@ -208,21 +190,19 @@ pub fn _set_allowance_key(_operator: AccountHash, _sender: AccountHash, _value: 
 #[allow(unused)]
 pub fn _call_tokens_to_send(_operator: AccountHash, _from: AccountHash, _to: AccountHash, _amount: U256, _data: Bytes, _operator_data: Bytes) {
 
-	// set_key(&allowance_key(&operator, &sender),U256::one());
-
+    // Logic to be written after 1820 implementation
 }
 
 #[allow(unused)]
 pub fn _call_tokens_received(_operator: AccountHash, _from: AccountHash, _to: AccountHash, _amount: U256, _data: Bytes, _operator_data: Bytes, _require_reception_ack: bool) {
 
-	// set_key(&allowance_key(&_operator, &_sender),U256::one());
-
+   // Logic to be written after 1820 implementation
 }
 
 #[allow(unused)]
 pub fn _before_token_transfer(_operator: AccountHash, _from: AccountHash, _to: AccountHash, _amount: U256) {
 
-    // set_key(&allowance_key(&operator, &sender),U256::one());
+  // Logic to be written after 1820 implementation
 
 }
 /// Moves the data
