@@ -94,20 +94,28 @@ fn test_erc777_transfer_from() {
 }
 
 #[test]
+/// Burn function which will display balance and total supply before burning and also the same parameters are displayed after burning the passed amount. 
 fn test_erc777_burn() {
-    let amount = 3.into();
+    let amount = 6.into();
     
     let mut t = Token::deployed();
     
-    t.burn_token(amount, Sender(t.ali));
+    println!("Before Balance of {}", t.balance_of(t.ali));
     
-    println!("Balance of {}", t.balance_of(t.ali));
+    println!("Before Token Supply of {}", t.total_supply());
+
+    t.burn_token(amount, t.ali, Sender(t.ali));
+
+    println!("After Balance of {}", t.balance_of(t.ali));
+
+    println!("After Token Supply of {}", t.total_supply());
     
-    println!("Token Supply of {}", t.total_supply());
+    assert_eq!(t.balance_of(t.ali), 0.into());
     
-    assert_eq!(t.balance_of(t.ali), 3.into());
-    
-    assert_eq!(t.total_supply(), token_cfg::total_supply());
+    assert_eq!(t.total_supply(), 0.into());
+
+
+    println!("Allowance {}", t.allowance(t.ali, t.ali)); 
   }
 
 #[test]

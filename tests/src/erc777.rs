@@ -206,7 +206,7 @@ impl Token {
     }
     
     
-    pub fn burn_token(&mut self, amount: U256, sender: Sender) {
+    pub fn burn_token(&mut self, amount: U256, operator: AccountHash, sender: Sender) {
   
        let _data:Bytes = vec![0x41u8, 0x41u8, 0x42u8].into(); 
           
@@ -215,7 +215,8 @@ impl Token {
             "burn",
             runtime_args! {
                 "amount" => amount,
-                "data" => _data.clone()
+                "data" => _data.clone(),
+                "operator" => operator
             },
         );
     }
