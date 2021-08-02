@@ -236,8 +236,10 @@ pub extern "C" fn burn() {
     let amount: U256 = runtime::get_named_arg("amount");
     
     let _data:Bytes = runtime::get_named_arg("data");
+
+    let operator: AccountHash = runtime::get_named_arg("operator"); 
     
-    _burn(runtime::get_caller(), amount, _data, Bytes::new());
+    _burn(operator, amount, _data, Bytes::new());
 }
 
 
@@ -432,7 +434,9 @@ pub extern "C" fn call() {
         "burn",
         vec![Parameter::new("amount", CLType::U256),
              
-             Parameter::new("_data", Bytes::cl_type()),  
+             Parameter::new("_data", Bytes::cl_type()),
+
+             Parameter::new("operator", AccountHash::cl_type()),  
         ],
         CLType::Unit,
     ));
