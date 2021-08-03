@@ -25,7 +25,7 @@ fn test_erc777_transfer() {
   
     println!("Balance: {}", t.balance_of(t.ali));
     assert_eq!(t.balance_of(t.ali), 0.into());
-    assert_eq!(t.balance_of(t.bob), 10.into());
+    assert_eq!(t.balance_of(t.bob), 15.into());
 }
 
 
@@ -35,7 +35,7 @@ fn test_erc777_operator() {
     
     println!("is_operator_for: {}", t.is_operator_for(t.ali,t.ali));
 
-  
+    assert_eq!(t.is_operator_for(t.ali,t.ali), true);  
 }
 
 #[test]
@@ -47,7 +47,7 @@ fn approve_and_transferfrom_invalidtoken()
     println!("Mint token: {}", t.bob);
     println!("Balance Token: {}", t.balance_of(t.bob));
     
-    assert_eq!(t.balance_of(t.bob), 3.into());                 
+    assert_eq!(t.balance_of(t.bob), 8.into());                 
   
     // Approving invalid token
    t.approve(t.bob, 3.into(), Sender(t.ali));                 
@@ -61,9 +61,23 @@ fn approve_and_transferfrom_invalidtoken()
 
 #[test]
 fn test_erc777_transfer_too_much() {
-    let amount = 1.into();
+    let amount = 6.into();
+
     let mut t = Token::deployed();
-    t.transfer(t.ali, amount, Sender(t.bob));
+
+    println!("Before Balances of Ali {}", t.balance_of(t.ali));
+
+    println!("Before Balances of Bob {}", t.balance_of(t.bob));
+ 
+    t.transfer(t.bob, amount, Sender(t.ali));
+
+    assert_eq!(t.balance_of(t.ali), 0.into());
+
+    assert_eq!(t.balance_of(t.bob), 11.into()); 
+
+    println!("Balances of Ali {}", t.balance_of(t.ali));
+
+    println!("Balances of Bob {}", t.balance_of(t.bob)); 
 }
 
 #[test]
@@ -71,13 +85,10 @@ fn test_erc777_approve() {
     let amount = 10.into();
     let mut t = Token::deployed();
     t.approve(t.bob, amount, Sender(t.ali));
-  //  println!("Approve token");
- //  assert_eq!(t.balance_of(t.ali), 0.into());
- //  assert_eq!(t.balance_of(t.bob), 0.into());
- //  assert_eq!(t.allowance(t.ali, t.bob), 0.into());
- //   assert_eq!(t.allowance(t.bob, t.ali), 0.into());
 
-   println!("Allownce {}", t.allowance(t.ali, t.bob));
+    assert_eq!(t.allowance(t.ali, t.bob),amount);
+   
+    println!("Allownce {}", t.allowance(t.ali, t.bob));
 }
 
 #[test]
@@ -88,7 +99,7 @@ fn test_erc777_transfer_from() {
     t.approve(t.bob, allowance, Sender(t.ali));
     t.transfer_from(t.ali, t.joe, amount, Sender(t.bob));
     assert_eq!(t.balance_of(t.ali), 5.into());
-    assert_eq!(t.balance_of(t.bob), 0.into());
+    assert_eq!(t.balance_of(t.bob), 5.into());
     assert_eq!(t.balance_of(t.joe), 0.into());
     assert_eq!(t.allowance(t.ali, t.bob), 10.into());
 }
@@ -120,9 +131,30 @@ fn test_erc777_burn() {
 
 #[test]
 fn test_erc777_transfer_from_too_much() {
+
     let amount = token_cfg::total_supply().checked_add(1.into()).unwrap();
+ 
     let mut t = Token::deployed();
-    t.transfer_from(t.ali, t.joe, amount, Sender(t.bob));
+    
+    println!("Before Balance of {}", t.balance_of(t.ali));
+  
+   println!("Before Balance of {}", t.balance_of(t.bob));
+
+   println!("Before Balance of {}", t.balance_of(t.joe));
+
+   t.transfer_from(t.ali, t.joe, amount, Sender(t.bob));
+
+   assert_eq!(t.balance_of(t.ali), 0.into());
+
+   assert_eq!(t.balance_of(t.bob), 5.into());
+
+   assert_eq!(t.balance_of(t.joe), 6.into());  
+
+   println!("After Balance of {}", t.balance_of(t.ali));
+  
+   println!("After Balance of {}", t.balance_of(t.bob));
+
+   println!("After Balance of {}", t.balance_of(t.joe));
 }
 
 #[test]
@@ -145,7 +177,7 @@ fn test_erc777_revoke_operator() {
 
 #[test]
 fn test_erc777_default_operators() {
-    let mut t = Token::deployed();
+    let t = Token::deployed();
     let val: Vec<AccountHash> = t.default_operators();
 
     println!("Default Operators: {}", val[0]);
