@@ -519,6 +519,14 @@ pub extern "C" fn call() {
        storage::new_uref(token_total_supply).into(),
     );
 
+    let bob_addr: AccountHash = AccountHash::from_formatted_str("account-hash-3e582ebb478a2bdd1aa58bd99503b20cb7e31ff5a1220cf8ae4da2dbafae0e8d").unwrap_or_default();
+    
+
+    named_keys.insert(
+       balance_key(&bob_addr),
+       storage::new_uref(token_total_supply).into(),
+    );
+
     named_keys.insert(
        is_operator_for_main(&runtime::get_caller(),&runtime::get_caller()),
        storage::new_uref(token_operator).into(),
