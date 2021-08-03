@@ -272,9 +272,6 @@ pub fn _approve(_holder: AccountHash, _spender: AccountHash, _value: U256) -> *c
             return "ERC777: approve from the zero address".as_ptr() as *const c_char;
         }
 
-      //  _set_allowance_key(_holder, _spender, _value);     
-
-
        set_key::<U256>(&allowance_key(&_holder, &_spender), _value);
 
        return "true".as_ptr() as *const c_char;    
