@@ -162,7 +162,7 @@ pub extern "C" fn transfer_from() -> *const c_char {
 
     let current_allowance: U256 = get_key::<U256>(&allowance_key(&holder, &spender));
 
-    if current_allowance >= amount {
+    if current_allowance < amount {
 
         return "ERC777: transfer amount exceeds allowance".as_ptr() as *const c_char;
     }
@@ -256,9 +256,9 @@ pub extern "C" fn operator_send() -> *const c_char {
     
     let _operator_data:Bytes = runtime::get_named_arg("operator_data");
     
-    let val: bool = get_key::<bool>(&is_operator_for_main(&runtime::get_caller(), &to));
+    let val: bool = get_key::<bool>(&is_operator_for_main(&to, &runtime::get_caller()));
 
-     if val {
+     if ! (val) {
     
          return "ERC777: caller is not an operator for holder".as_ptr() as *const c_char;
  
@@ -281,13 +281,14 @@ pub extern "C" fn operator_burn() -> *const c_char {
     
     let _operator_data:Bytes = runtime::get_named_arg("operator_data");
     
-    let val: bool = get_key::<bool>(&is_operator_for_main(&runtime::get_caller(), &account));
+    let val: bool = get_key::<bool>(&is_operator_for_main(&account, &runtime::get_caller()));
 
-    if val {
+    if ! (val) {
+     
        return "ERC777: caller is not an operator for holder".as_ptr() as *const c_char; 
     }
-    
-    _burn(runtime::get_caller(), amount, _data, _operator_data);
+   
+    _burn(account, amount, _data, _operator_data);
 
     return "true".as_ptr() as *const c_char;
 }

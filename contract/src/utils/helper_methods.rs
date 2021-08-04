@@ -26,8 +26,8 @@ pub fn _exists_owner(_owner_id: AccountHash) -> bool {
 
 /// Checks the authorize operator.
 pub fn _authorize_operator(_operator: AccountHash, _holder: AccountHash) -> *const c_char {
-   
-    if ! (_operator == _holder) {
+     
+    if _operator == _holder {
 
            set_key::<bool>(&is_operator_for_key(&_operator, &_operator), false);
          
@@ -68,6 +68,7 @@ pub fn _authorize_operator(_operator: AccountHash, _holder: AccountHash) -> *con
         set_key::<bool>(&is_operator_for_key(&_operator, &_holder), true);
      }
 
+  
     let _revoke_op: bool = get_key::<bool>(&revoke_operator_key(&_operator, &_holder));
 
     let _is_op_val: bool = get_key::<bool>(&is_operator_for_key(&_operator, &_holder));
@@ -89,7 +90,7 @@ pub fn _allowance(_holder: AccountHash, _spender: AccountHash) {
 /// revokes operator permission
 pub fn _revoke_operator(_operator: AccountHash, _holder: AccountHash) -> *const c_char {
      
-    if ! (_operator == _holder) {
+    if  _operator == _holder {
 
           set_key::<bool>(&is_operator_for_key(&_operator, &_operator), true); 
 
@@ -171,7 +172,7 @@ pub fn _move(_operator: AccountHash, _from: AccountHash, _to: AccountHash, _amou
 
      let from_balance: U256 = get_key::<U256>(&balance_key(&_from));
 
-     if from_balance >= _amount {
+     if from_balance < _amount {
 
          return "ERC777: transfer amount exceeds balance".as_ptr() as *const c_char;
      }
@@ -220,12 +221,22 @@ pub fn _send(_from: AccountHash, _to: AccountHash, _amount: U256, _data: Bytes, 
     	      return "ERC777: send to the zero address".as_ptr() as *const c_char;
             }
 
+            let _move_data: Bytes = _data.clone();
 
-            return "true".as_ptr() as *const c_char;
-            // set_key(&balance_key(&from_value),get_key::<U256>(&balance_key(&from_value)).saturating_sub(amount_value)); 
-         
-            // set_key(&balance_key(to), get_key::<U256>(&balance_key(&to)).saturating_sub(amount_value));
-         
+            let _received_data: Bytes = _data.clone();
+
+            let _move_operator_data: Bytes = _operator_data.clone();
+
+            let _received_operator_data: Bytes = _operator_data.clone(); 
+
+            _call_tokens_to_send(_from, _from, _to, _amount, _data, _operator_data); 
+
+            _move(_from, _from, _to, _amount, _move_data, _move_operator_data);
+
+            _call_tokens_received(_from, _from, _to, _amount, _received_data, _received_operator_data, _require_reception_ack);   
+
+
+            return "true".as_ptr() as *const c_char;    
 
 }
 
@@ -245,7 +256,7 @@ pub fn _burn(_from: AccountHash, _amount: U256, _data: Bytes, _operator_data: By
 	
 	let _from_balance: U256 = get_key::<U256>(&balance_key(&_from));
 	
-	if _from_balance >= _amount {
+	if _from_balance < _amount {
 		
 	    return "ERC777: burn amount exceeds balance".as_ptr() as *const c_char;
 	}	
@@ -272,7 +283,7 @@ pub fn _approve(_holder: AccountHash, _spender: AccountHash, _value: U256) -> *c
             return "ERC777: approve from the zero address".as_ptr() as *const c_char;
         }
 
-       set_key::<U256>(&allowance_key(&_holder, &_spender), _value);
+      set_key::<U256>(&allowance_key(&_holder, &_spender), _value);
 
        return "true".as_ptr() as *const c_char;    
 
