@@ -147,6 +147,44 @@ impl Token {
         );
     }
 
+
+    pub fn operator_send(&mut self, recipient: AccountHash, amount: U256, sender: Sender) {
+        
+        let _data:Bytes = vec![0x41u8, 0x41u8, 0x42u8].into();
+
+        let _operator_data:Bytes = vec![0x59u8, 0x59u8, 0x59u8].into();
+
+        self.call(
+            sender,
+            "operator_send",
+            runtime_args! {
+                "recipient" => recipient,
+                "amount" => amount,
+                "data" => _data.clone(),
+                "operator_data" => _operator_data.clone()
+            },
+        );
+    }
+
+
+    pub fn operator_burn(&mut self, account: AccountHash, amount: U256, sender: Sender) {
+
+        let _data:Bytes = vec![0x41u8, 0x41u8, 0x42u8].into();
+
+        let _operator_data:Bytes = vec![0x59u8, 0x59u8, 0x59u8].into();
+
+        self.call(
+            sender,
+            "operator_burn",
+            runtime_args! {
+                "account" => account,
+                "amount" => amount,
+                "data" => _data.clone(),
+                "operator_data" => _operator_data.clone()
+            },
+        );
+    } 
+
     pub fn authorize_operator(&mut self, operator: AccountHash, sender: Sender) {
         self.call(
             sender,
