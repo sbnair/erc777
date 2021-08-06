@@ -53,7 +53,7 @@ fn approve_and_transferfrom_invalidtoken()
   
     // Approving invalid token
    t.approve(t.bob, 3.into(), Sender(t.ali));                 
-  //  assert_ne!(t.owner_of(3.into()), t.bob);                   
+               
     println!("Mint token1: {}",t.joe);
     // TransferFrom invalid token
    t.transfer_from(t.ali, t.joe, 3.into() ,Sender(t.bob));
