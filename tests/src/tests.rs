@@ -13,7 +13,7 @@ fn test_erc777_deploy() {
     println!("Account of Bob: {}", t.bob);
     println!("Account of Joe: {}", t.joe);
 //    assert_eq!(t.decimals(), token_cfg::DECIMALS);
-    assert_eq!(t.total_supply(), token_cfg::total_supply());
+    assert_eq!(t.total_supply(), token_cfg::total_supply());  // Token supply is set to 5 and so the default balance of Ali and Bob accounts are set to 5.
  
 }
 
